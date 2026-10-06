@@ -3,6 +3,7 @@
 // profile.games[gameId] (see core/progress.js).
 
 import { totalStars } from './progress.js';
+import { freshStickerBook } from './stickers.js';
 
 export const NAME_MAX = 12;
 export const MAX_PROFILES = 6;
@@ -65,6 +66,7 @@ export function createProfile({ name, avatar }, { now = Date.now(), id = newId()
     avatar: avatarFor(avatar).id,
     createdAt: now,
     games: {},
+    stickers: freshStickerBook(),
   };
 }
 
