@@ -90,7 +90,8 @@ function candidates(f) {
     case 'count':
       return [n + 1, n - 1, n + 2, n - 2];
     case 'add':
-      return [n + 1, n - 1, Math.abs(a - b), n + 2, n - 2];
+      // The swapped operation (5 + 3 → 2) is a real mistake; 5 + 5 → 0 isn't.
+      return [n + 1, n - 1, a === b ? null : Math.abs(a - b), n + 2, n - 2];
     case 'sub':
       return [n + 1, n - 1, a + b, n + 2, n - 2];
     case 'doubles':

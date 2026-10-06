@@ -380,3 +380,20 @@
     animation: none;
   }
 }
+
+/* Landscape tablets and laptops: Pip beside the board, like the Reading Game. */
+@media (min-width: 820px) and (orientation: landscape) {
+  .quest-area {
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    align-items: start;
+    max-width: 1200px;
+  }
+}
+
+/* Phones held sideways. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .quest-area {
+    grid-template-columns: 170px minmax(0, 1fr);
+    align-items: start;
+  }
+}

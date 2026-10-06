@@ -114,6 +114,10 @@ describe('distractors', () => {
     expect(distractors({ skill: 'times', a: 5, b: 4, answer: 20, ceiling: 50 }, 3)).toEqual([25, 15, 9]);
   });
 
+  it('skips a swapped operation that would just be zero', () => {
+    expect(distractors({ skill: 'add', a: 5, b: 5, answer: 10, ceiling: 10 }, 2)).toEqual([9, 8]);
+  });
+
   it('never goes below zero (or one when counting) or above the range', () => {
     expect(distractors({ skill: 'count', a: 1, b: 0, answer: 1, ceiling: 5 }, 3)).toEqual([2, 3, 4]);
     expect(distractors({ skill: 'sub', a: 2, b: 2, answer: 0, ceiling: 5 }, 3)).toEqual([1, 4, 2]);
