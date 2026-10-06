@@ -35,9 +35,9 @@ export const STICKERS = [
 export const STICKER_IDS = STICKERS.map((s) => s.id);
 
 export const SCENES = [
-  { id: 'beach', name: 'Sunny Beach' },
-  { id: 'garden', name: 'Flower Garden' },
-  { id: 'night', name: 'Night Sky' },
+  { id: 'beach', name: 'Sunny Beach', short: '🏖️ Beach' },
+  { id: 'garden', name: 'Flower Garden', short: '🌷 Garden' },
+  { id: 'night', name: 'Night Sky', short: '🌙 Night' },
 ];
 
 export const SCENE_IDS = SCENES.map((s) => s.id);

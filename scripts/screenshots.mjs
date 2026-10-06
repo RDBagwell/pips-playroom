@@ -4,15 +4,16 @@
 // sizes, and saves PNGs to docs/screenshots/. Needs Playwright's Chromium
 // (`npx playwright install chromium`, or PLAYWRIGHT_BROWSERS_PATH set).
 // Fails if a page logs an error, requests anything from another site,
-// scrolls sideways, a speech bubble's tail doesn't point at Pip, or the
-// grown-ups' panels leave gaps (see lib/layout-checks.mjs).
+// scrolls sideways, a speech bubble's tail doesn't point at Pip, the
+// grown-ups' panels leave gaps, or the sticker book cuts a sticker off or
+// doesn't fit on screen (see lib/layout-checks.mjs).
 
 import { chromium } from '@playwright/test';
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkBubbleTails, checkPanelGaps } from './lib/layout-checks.mjs';
+import { checkBubbleTails, checkPanelGaps, checkStickerPage } from './lib/layout-checks.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const outDir = join(root, 'docs', 'screenshots');
@@ -51,7 +52,7 @@ function seed() {
   };
   p.stickers = { seen: 0, scenes: { beach: [
     { id: 'sun', x: 84, y: 14 }, { id: 'whale', x: 62, y: 56 }, { id: 'fish', x: 30, y: 60 },
-    { id: 'crab', x: 22, y: 86 }, { id: 'octopus', x: 80, y: 84 }, { id: 'ladybug', x: 52, y: 90 },
+    { id: 'crab', x: 6, y: 96 }, { id: 'octopus', x: 97, y: 92 }, { id: 'ladybug', x: 52, y: 99 },
   ] } };
   for (const g of Object.keys(r.settings.games)) r.settings.games[g].unlockAll = true;
   localStorage.setItem('pips-playroom', JSON.stringify(r));
@@ -133,6 +134,7 @@ for (const [name, device] of Object.entries(DEVICES)) {
   // The sticker book's beach page.
   await home();
   await tap(page.locator('.sticker-banner'));
+  await layout('sticker book', checkStickerPage);
   await shot('stickers');
 
   // The grown-ups' progress view (past the 3-second hold).
