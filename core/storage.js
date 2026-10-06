@@ -27,7 +27,7 @@ export const SCHEMA_VERSION = 2;
 
 /** Limits that keep a damaged or hostile record from growing without bound. */
 export const MAX_TRICKY = 40;
-export const MAX_STATS = 20;
+export const MAX_STATS = 40;
 export const MAX_IMPORTS = 10;
 
 const isObj = (x) => x !== null && typeof x === 'object' && !Array.isArray(x);
@@ -144,7 +144,7 @@ export function sanitizeProgress(g) {
     levels,
     totalScore: intIn(src.totalScore, 0, 1e9, 0),
     // Things this player found tricky (missed words, mixed-up numbers): key → times.
-    tricky: topCounts(src.tricky, /^[\p{L}\p{N}' |<>-]{1,40}$/u, MAX_TRICKY, 1e6),
+    tricky: topCounts(src.tricky, /^[\p{L}\p{N}' |<>+×=,.-]{1,40}$/u, MAX_TRICKY, 1e6),
     stats,
   };
 }

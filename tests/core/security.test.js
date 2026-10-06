@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { DATA_URLS } from '../helpers/games.js';
 
 const root = process.cwd();
 const read = (p) => readFileSync(join(root, p), 'utf8');
@@ -47,7 +48,7 @@ describe('page security', () => {
     expect(fetches.length).toBeLessThanOrEqual(2);
     // Every game's data path is relative and inside data/.
     const dataPaths = sources.filter(([f]) => f.startsWith('games')).flatMap(([, src]) => [...src.matchAll(/\bdata: '([^']+)'/g)].map((m) => m[1]));
-    expect(dataPaths.sort()).toEqual(['./data/number-quest/levels.json', './data/reading/levels.json']);
+    expect(dataPaths.sort()).toEqual([...DATA_URLS].sort());
     expect(read('core/main.js')).toMatch(/loadAllGames\(/);
   });
 

@@ -1,13 +1,9 @@
 // @vitest-environment jsdom
 // End-to-end through the real screens, with speech mocked and no network.
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { GAME_IDS, DATA_URLS, fakeFetch } from '../helpers/games.js';
 import { createMockWindow, VOICES } from '../helpers/mockSpeech.js';
 
-const data = {
-  './data/reading/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/reading/levels.json`, 'utf8')),
-  './data/number-quest/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/number-quest/levels.json`, 'utf8')),
-};
 let mock;
 const requests = [];
 
@@ -29,10 +25,7 @@ beforeAll(async () => {
   window.requestAnimationFrame = (fn) => setTimeout(() => fn(performance.now()), 16);
   window.cancelAnimationFrame = (id) => clearTimeout(id);
   Element.prototype.scrollIntoView = () => {};
-  globalThis.fetch = async (url) => {
-    requests.push(String(url));
-    return { ok: url in data, status: url in data ? 200 : 404, json: async () => data[url] };
-  };
+  globalThis.fetch = fakeFetch(requests);
   await import('../../core/main.js');
   await flush(10);
 });
@@ -61,7 +54,7 @@ describe('the game', () => {
     // The playroom: Pip greets the reader by name, then they choose the Reading Game.
     expect(app().dataset.screen).toBe('hub');
     expect(lastSpoken()).toBe('Hi, Ava! What would you like to play?');
-    expect(document.querySelectorAll('.game-card')).toHaveLength(2);
+    expect(document.querySelectorAll('.game-card')).toHaveLength(GAME_IDS.length);
     document.querySelector('.game-card[data-game="reading"]').click();
     expect(app().dataset.screen).toBe('reading/map');
     expect(document.querySelector('.player-name').textContent).toBe('Ava');
@@ -109,6 +102,6 @@ describe('the game', () => {
   });
 
   it('never made a network request other than its own level data', () => {
-    expect(requests).toEqual(['./data/reading/levels.json', './data/number-quest/levels.json']);
+    expect(requests).toEqual(DATA_URLS);
   });
 });

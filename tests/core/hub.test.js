@@ -3,13 +3,10 @@
 // greets them, and a grown-up uses the grown-ups' corner.
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { GAME_IDS, DATA_URLS, fakeFetch } from '../helpers/games.js';
 import { createMockWindow } from '../helpers/mockSpeech.js';
 
 const read = (p) => readFileSync(`${process.cwd()}/${p}`, 'utf8');
-const data = {
-  './data/reading/levels.json': JSON.parse(read('data/reading/levels.json')),
-  './data/number-quest/levels.json': JSON.parse(read('data/number-quest/levels.json')),
-};
 const LEGACY = read('tests/fixtures/reading-game-v1.json');
 // Only online English voices, like Chrome on a machine with no English OS voice.
 const ONLINE_ONLY = [
@@ -38,7 +35,7 @@ beforeAll(async () => {
   Element.prototype.scrollIntoView = () => {};
   HTMLDialogElement.prototype.showModal = function showModal() { this.open = true; };
   HTMLDialogElement.prototype.close = function close() { this.open = false; };
-  globalThis.fetch = async (url) => ({ ok: url in data, status: 200, json: async () => data[url] });
+  globalThis.fetch = fakeFetch();
   await import('../../core/main.js');
   await flush(10);
 });
@@ -65,7 +62,7 @@ describe('the playroom', () => {
     expect(document.querySelector('.speech-bubble').textContent).toBe('Hi, Ava! What would you like to play?');
     expect(document.querySelector('.player-bar').textContent).toMatch(/6 in all/);
     const cards = [...document.querySelectorAll('.game-card')];
-    expect(cards.map((c) => c.dataset.game)).toEqual(['reading', 'number-quest']);
+    expect(cards.map((c) => c.dataset.game)).toEqual(GAME_IDS);
     expect(cards[0].querySelector('.game-card-stars').textContent).toBe('★ 6 of 36');
     expect(cards[1].querySelector('.game-card-stars').textContent).toBe('★ 0 of 18');
     expect(document.title).toBe('Playroom · Pip’s Playroom');
@@ -106,7 +103,7 @@ describe('the playroom', () => {
 
   it('shows each game’s own settings section', () => {
     const headings = [...document.querySelectorAll('.settings-section h2')].map((h) => h.textContent);
-    expect(headings).toEqual(['Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', 'Privacy']);
+    expect(headings).toEqual(['Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', '🌻 Math Garden', 'Privacy']);
     expect(document.getElementById('case-title').checked).toBe(true);
     expect(document.body.textContent).toMatch(/were brought over on/);
   });
@@ -135,7 +132,7 @@ describe('the playroom', () => {
     toggle.dispatchEvent(new Event('change'));
     label('Back to the game').click();
     expect(app().dataset.screen).toBe('hub');
-    expect([...document.querySelectorAll('.game-card')].map((c) => c.dataset.game)).toEqual(['reading']);
+    expect([...document.querySelectorAll('.game-card')].map((c) => c.dataset.game)).toEqual(GAME_IDS.filter((id) => id !== 'number-quest'));
     const saved = JSON.parse(localStorage.getItem('pips-playroom'));
     expect(saved.settings.hiddenGames).toEqual(['number-quest']);
   });
