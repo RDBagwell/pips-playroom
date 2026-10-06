@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "levels": [
+    { "id": 1, "name": "Home Row Hop", "emoji": "🏠", "color": "#FFB84D", "kind": "letters", "letters": "asdfjkl",
+      "focus": "Finding letters: the home row", "about": "Fingers rest on the home row. The F and J keys have little bumps to find by touch.", "goal": 10 },
+    { "id": 2, "name": "Treetop Keys", "emoji": "🌳", "color": "#5CC689", "kind": "letters", "letters": "qwertyuiop",
+      "focus": "Finding letters: the top row", "about": "Reaching up from the home row and back again.", "goal": 10 },
+    { "id": 3, "name": "Burrow Keys", "emoji": "🦔", "color": "#C4733A", "kind": "letters", "letters": "zxcvbnmgh",
+      "focus": "Finding letters: the bottom row", "about": "Reaching down, plus G and H in the middle.", "goal": 10 },
+    { "id": 4, "name": "Tiny Words", "emoji": "🐞", "color": "#FF7A6B", "kind": "words",
+      "words": ["at", "in", "on", "up", "it", "is", "am", "an", "go", "me", "we", "he", "us", "if", "cat", "dog", "sun", "hat", "pig", "bed", "run", "bus", "hop", "map", "cup", "fox", "jam", "egg", "box", "web"],
+      "focus": "Two- and three-letter words", "about": "Short words to type, letter by letter.", "goal": 8 },
+    { "id": 5, "name": "Kitten Keys", "emoji": "🐱", "color": "#FFB84D", "kind": "words", "fromReading": [1], "canHide": true, "goal": 8 },
+    { "id": 6, "name": "Puppy Paws", "emoji": "🐶", "color": "#FF9ED2", "kind": "words", "fromReading": [2, 3], "canHide": true, "goal": 8 },
+    { "id": 7, "name": "Barnyard Keys", "emoji": "🐮", "color": "#9B7BE6", "kind": "words", "fromReading": [4, 5], "canHide": true, "goal": 8 },
+    { "id": 8, "name": "Lily Pad Letters", "emoji": "🐸", "color": "#5CC689", "kind": "words", "fromReading": [6, 7], "canHide": true, "goal": 8 },
+    { "id": 9, "name": "Forest Path", "emoji": "🌲", "color": "#3E9E68", "kind": "words", "fromReading": [8, 9], "canHide": true, "goal": 8 },
+    { "id": 10, "name": "Rainbow Run", "emoji": "🌈", "color": "#4DB6F0", "kind": "words", "fromReading": [10, 11, 12], "canHide": true, "goal": 8 },
+    { "id": 11, "name": "Sentence Street", "emoji": "🚌", "color": "#FFC93C", "kind": "sentences",
+      "sentences": ["the cat can hop.", "a dog sat on a mat.", "we can run in the sun.", "the pig is in the mud.", "I see a big red bus.", "my fox has a box.", "the frog can jump.", "we like to play."],
+      "focus": "Short sentences", "about": "Spaces between words and a full stop at the end.", "goal": 4 }
+  ]
+}
