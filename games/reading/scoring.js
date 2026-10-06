@@ -1,10 +1,13 @@
-// Points and stars. Points are never taken away and there is no game over.
+// Points and stars for the Reading Game. Points are never taken away and
+// there is no game over. The shared star helpers live in core/scoring.js.
+
+import { MAX_STARS, STAR_BONUS, levelBonus } from '../../core/scoring.js';
+
+export { MAX_STARS, STAR_BONUS, levelBonus };
 
 export const POINTS = { firstTry: 10, secondTry: 5, later: 2 };
 export const STREAK_STEP = 2;
 export const STREAK_CAP = 10;
-export const STAR_BONUS = 20;
-export const MAX_STARS = 3;
 
 export function pointsForAnswer(attempts) {
   if (attempts <= 1) return POINTS.firstTry;
@@ -29,8 +32,4 @@ export function starsFor(firstTry, total) {
   if (accuracy >= 0.85) return 3;
   if (accuracy >= 0.6) return 2;
   return 1;
-}
-
-export function levelBonus(stars) {
-  return stars * STAR_BONUS;
 }

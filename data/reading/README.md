@@ -1,4 +1,4 @@
-# Level data
+# Reading Game level data
 
 All the words in the game live in [`levels.json`](levels.json). It's plain JSON,
 so you can edit it in any text editor. Run `npm test` afterwards: the tests
@@ -60,7 +60,7 @@ earlier levels are only used if a level has too few words to fill the cards.
 - 15–30 words per level, no duplicates within a level.
 - No two words anywhere in the game sound the same (*to/two*, *see/sea*): the
   child only *hears* the target, so a homophone on screen would be unfair. The
-  list of known homophones is in `js/distractors.js`.
+  list of known homophones is in `games/reading/distractors.js`.
 - No words that can be said two ways (*read*, *live*, *wind*).
 - Every word in every level can be shown with a full set of wrong choices, and
   most wrong choices fit the level's mode.
@@ -70,7 +70,7 @@ earlier levels are only used if a level has too few words to fill the cards.
 1. Copy the last level in `levels.json` and give it the next `id`.
 2. Change the `name`, `focus`, `words` and settings.
 3. Run `npm test`. If it complains about a homophone, remove one of the pair.
-4. Open the game. The new stepping stone appears at the end of the map.
+4. Open the Reading Game. The new stepping stone appears at the end of the map.
 
 Keep the words common and kid-appropriate. Remember that the browser's voice
 reads each word aloud, so avoid words it might pronounce oddly.

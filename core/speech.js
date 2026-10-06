@@ -6,6 +6,10 @@
 //  - we pick the best English voice rather than a hardcoded index;
 //  - we cancel *before* speaking (v1 spoke, then cancelled its own utterance);
 //  - every phrase gets a fresh SpeechSynthesisUtterance (reuse is flaky in Safari).
+//
+// Privacy: on-device voices are always preferred over online ones (see
+// rankEnglishVoices). An online voice is used only when this device has no
+// English voice of its own, or when a grown-up picks one; settings then say so.
 
 export const DEFAULT_RATE = 0.85;
 export const MIN_RATE = 0.5;
@@ -20,15 +24,31 @@ function langOf(voice) {
   return String(voice.lang || '').replace('_', '-').toLowerCase();
 }
 
-/** English voices only, best first. Pure, so it is easy to test. */
+/**
+ * Does this voice send the words it speaks to an online service?
+ * Browsers report that as `localService: false` (Chrome's "Google US English",
+ * for example). Voices that say nothing are treated as on-device.
+ */
+export function usesInternet(voice) {
+  return Boolean(voice) && voice.localService === false;
+}
+
+/**
+ * English voices only, best first. Pure, so it is easy to test.
+ *
+ * Privacy first: every on-device voice ranks above every online voice, so
+ * the words Pip says stay on this device whenever an English voice here can
+ * say them. Within each group: en-US, then en-GB, then any en-*, then the
+ * system default.
+ */
 export function rankEnglishVoices(voices) {
   const score = (v) => {
     const lang = langOf(v);
     let s = 0;
+    if (!usesInternet(v)) s += 100; // on-device: nothing leaves the device, and it works offline
     if (lang === 'en-us') s += 40;
     else if (lang === 'en-gb') s += 30;
     else if (lang.startsWith('en')) s += 20;
-    if (v.localService) s += 5; // local voices start faster and work offline
     if (v.default) s += 2;
     return s;
   };
@@ -39,9 +59,15 @@ export function rankEnglishVoices(voices) {
     .map((x) => x.v);
 }
 
+/** True when this device has at least one on-device English voice. */
+export function hasOnDeviceEnglish(voices) {
+  return (voices || []).some((v) => langOf(v).startsWith('en') && !usesInternet(v));
+}
+
 /**
- * Choose a voice: the grown-up's saved choice if it still exists,
- * otherwise the best English voice (en-US, then any en-*), otherwise the default.
+ * Choose a voice: the grown-up's saved choice if it still exists (a grown-up
+ * may pick an online voice on purpose), otherwise the best English voice
+ * (on-device first, see rankEnglishVoices), otherwise an on-device default.
  */
 export function pickVoice(voices, preferredURI) {
   if (!voices || voices.length === 0) return null;
@@ -51,7 +77,8 @@ export function pickVoice(voices, preferredURI) {
   }
   const english = rankEnglishVoices(voices);
   if (english.length) return english[0];
-  return voices.find((v) => v.default) || voices[0];
+  const local = voices.filter((v) => !usesInternet(v));
+  return local.find((v) => v.default) || local[0] || voices.find((v) => v.default) || voices[0];
 }
 
 export function clampRate(rate) {
@@ -161,6 +188,10 @@ export function createSpeech(win = globalThis, { voiceTimeoutMs = 2000 } = {}) {
     },
     get voice() {
       return voice;
+    },
+    /** True when the voice in use sends spoken words to an online service. */
+    get usesInternet() {
+      return usesInternet(voice);
     },
     get rate() {
       return rate;

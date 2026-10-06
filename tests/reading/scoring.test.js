@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { pointsForAnswer, streakBonus, starsFor, levelBonus } from '../js/scoring.js';
+import { pointsForAnswer, streakBonus, starsFor, levelBonus } from '../../games/reading/scoring.js';
 
 describe('scoring', () => {
   it('awards 10 / 5 / 2 points by attempt', () => {

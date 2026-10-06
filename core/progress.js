@@ -1,6 +1,52 @@
-// A player's progress through the levels. Pure functions over plain objects.
+// A player's progress through one game's levels. Pure functions over plain
+// objects. Each game keeps its own progress record on the profile:
+//   profile.games[gameId] = { unlocked, levels: { [id]: { stars, best, plays } },
+//                             totalScore, tricky: { [thing]: times }, stats: {} }
 
 import { MAX_STARS } from './scoring.js';
+
+export function freshProgress() {
+  return { unlocked: 1, levels: {}, totalScore: 0, tricky: {}, stats: {} };
+}
+
+/** This profile's progress in a game, created on first use. */
+export function gameProgress(profile, gameId) {
+  if (!profile.games[gameId]) profile.games[gameId] = freshProgress();
+  return profile.games[gameId];
+}
+
+/** Read-only view: progress if any, without creating it. */
+export function peekProgress(profile, gameId) {
+  return profile.games[gameId] || freshProgress();
+}
+
+/** Stars across every game. */
+export function allStars(profile) {
+  return Object.values(profile.games).reduce((sum, g) => sum + totalStars(g), 0);
+}
+
+/** Count something the player found tricky (a missed word, a number mix-up). */
+export function noteTricky(progress, key, max = 40) {
+  if (!progress.tricky) progress.tricky = {};
+  progress.tricky[key] = (progress.tricky[key] || 0) + 1;
+  const keys = Object.keys(progress.tricky);
+  if (keys.length > max) {
+    // Forget the least-missed thing so the list stays short.
+    const [least] = keys.sort((a, b) => progress.tricky[a] - progress.tricky[b]);
+    delete progress.tricky[least];
+  }
+}
+
+/** The trickiest things first: [[key, times], ...]. */
+export function trickiest(progress, limit = 8) {
+  return Object.entries(progress.tricky || {}).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, limit);
+}
+
+/** Add to a counter in progress.stats. */
+export function addStat(progress, key, n = 1) {
+  if (!progress.stats) progress.stats = {};
+  progress.stats[key] = (progress.stats[key] || 0) + n;
+}
 
 export function levelRecord(profile, levelId) {
   return profile.levels[levelId] || { stars: 0, best: 0, plays: 0 };

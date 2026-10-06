@@ -8,9 +8,14 @@ import { screen, topbar } from '../ui.js';
 
 export const HOLD_MS = 3000;
 
-register('gate', ({ next = 'settings', from = 'map' } = {}) => {
+/** Where "back" goes when a screen wasn't told: the playroom, or the reader list. */
+export function defaultBack() {
+  return { name: ctx.record.activeProfileId ? 'hub' : 'profiles' };
+}
+
+register('gate', ({ next = 'settings', back: backTo = defaultBack() } = {}) => {
   let timer = null;
-  const back = () => go(from === 'profiles' || !ctx.record.activeProfileId ? 'profiles' : 'map');
+  const back = () => go(backTo.name, backTo.params);
 
   const button = el('button', { type: 'button', class: 'hold-button', 'aria-describedby': 'gate-help' },
     el('span', { class: 'hold-fill', 'aria-hidden': 'true' }),
@@ -24,7 +29,7 @@ register('gate', ({ next = 'settings', from = 'map' } = {}) => {
     timer = setTimeout(() => {
       timer = null;
       ctx.sfx?.play('correct');
-      go(next, { from });
+      go(next, { back: backTo });
     }, HOLD_MS);
   }
   function stop() {

@@ -3,7 +3,7 @@ import { register, go } from '../router.js';
 import { ctx, save, takeNotice } from '../context.js';
 import { screen, topbar, iconButton, avatarBadge, notice } from '../ui.js';
 import { AVATARS, MAX_PROFILES, NAME_MAX, addProfile } from '../profiles.js';
-import { totalStars } from '../progress.js';
+import { allStars } from '../progress.js';
 
 register('profiles', () => {
   const { record } = ctx;
@@ -13,8 +13,7 @@ register('profiles', () => {
     ctx.sfx?.play('tap');
     record.activeProfileId = profile.id;
     save();
-    ctx.speech.say(`Hi, ${profile.name}!`);
-    go('map');
+    go('hub', { greet: true });
   }
 
   const tiles = record.profiles.map((p) =>
@@ -22,7 +21,7 @@ register('profiles', () => {
       el('button', { type: 'button', class: 'profile-tile', on: { click: () => choose(p) } },
         avatarBadge(p, { size: 'lg' }),
         el('span', { class: 'profile-name', text: p.name }),
-        el('span', { class: 'profile-stars', text: `★ ${totalStars(p)}` }),
+        el('span', { class: 'profile-stars', text: `★ ${allStars(p)}` }),
       )));
 
   if (record.profiles.length < MAX_PROFILES) {
@@ -35,10 +34,10 @@ register('profiles', () => {
 
   const node = screen('profiles',
     topbar({
-      title: "Who's reading?",
+      title: "Who's playing?",
       actions: [
-        iconButton({ icon: '🏆', label: 'Best readers', onClick: () => go('scores', { from: 'profiles' }) }),
-        iconButton({ icon: '⚙️', label: 'Grown-ups', onClick: () => go('gate', { next: 'settings', from: 'profiles' }) }),
+        iconButton({ icon: '🏆', label: 'Best scores', onClick: () => go('scores', { back: { name: 'profiles' } }) }),
+        iconButton({ icon: '⚙️', label: 'Grown-ups', onClick: () => go('gate', { next: 'settings', back: { name: 'profiles' } }) }),
       ],
     }),
     msg && notice(msg),
@@ -46,7 +45,7 @@ register('profiles', () => {
     record.profiles.length >= MAX_PROFILES &&
       el('p', { class: 'hint', text: `Up to ${MAX_PROFILES} readers can play on this device. A grown-up can remove one in settings.` }),
   );
-  return { node, title: "Who's reading?" };
+  return { node, title: "Who's playing?" };
 });
 
 register('new-profile', () => {
@@ -86,8 +85,7 @@ register('new-profile', () => {
     record.activeProfileId = result.profile.id;
     save();
     ctx.sfx?.play('correct');
-    ctx.speech.say(`Hi, ${result.profile.name}! Let's read!`);
-    go('map');
+    go('hub', { greet: true });
   }
 
   const form = el('form', { class: 'panel new-profile-form', novalidate: true, on: { submit } },

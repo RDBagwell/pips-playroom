@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { validateLevels, normalizeLevels, earlierWords, loadLevels } from '../js/levels.js';
-import { pickDistractors, matchesMode, HOMOPHONES, HETERONYMS } from '../js/distractors.js';
-import { seeded } from './helpers/rng.js';
+import { validateLevels, normalizeLevels, earlierWords, loadLevels } from '../../games/reading/levels.js';
+import { pickDistractors, matchesMode, HOMOPHONES, HETERONYMS } from '../../games/reading/distractors.js';
+import { seeded } from '../helpers/rng.js';
 
-const raw = JSON.parse(readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8'));
+const raw = JSON.parse(readFileSync(new URL('../../data/reading/levels.json', import.meta.url), 'utf8'));
 const levels = normalizeLevels(raw);
 
-describe('data/levels.json', () => {
+describe('data/reading/levels.json', () => {
   it('passes validation', () => {
     expect(validateLevels(raw)).toEqual([]);
   });

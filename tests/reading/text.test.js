@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { formatWord, normalizeWord } from '../js/text.js';
-import { pickPraise, PRAISE, correctionPhrases } from '../js/praise.js';
-import { seeded } from './helpers/rng.js';
+import { formatWord, normalizeWord } from '../../games/reading/text.js';
+import { pickPraise, PRAISE, correctionPhrases } from '../../games/reading/praise.js';
+import { seeded } from '../helpers/rng.js';
 
 describe('word display', () => {
   it('shows lowercase by default, except "I"', () => {

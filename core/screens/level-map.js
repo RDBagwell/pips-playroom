@@ -1,24 +1,33 @@
+// The level map every game shares: a winding path of stepping stones, with
+// the reader's stars and best score on each. Moved from the Reading Game.
+//
+//   screens: { map: createLevelMap('reading', { scoresLabel: 'Best readers' }) }
+
 import { el } from '../dom.js';
-import { register, go } from '../router.js';
-import { ctx, activeProfile, settings, takeNotice } from '../context.js';
+import { go } from '../router.js';
+import { ctx, activeProfile, activeProgress, gameSettings, levelsOf, isGameVisible, takeNotice } from '../context.js';
 import { screen, topbar, iconButton, avatarBadge, starRow, notice } from '../ui.js';
 import { isUnlocked, levelRecord, totalStars } from '../progress.js';
 import { snakeCell, snakeLink } from '../path.js';
 
-register('map', () => {
+export const createLevelMap = (gameId, { scoresLabel = 'Best scores' } = {}) => () => {
   const profile = activeProfile();
   if (!profile) return { redirect: 'profiles' };
+  const progress = activeProgress(gameId);
+  const levels = levelsOf(gameId);
+  if (!levels.length || !isGameVisible(gameId)) return { redirect: 'hub' };
   const msg = takeNotice();
-  const opts = { unlockAll: settings().unlockAll };
-  const count = ctx.levels.length;
+  const opts = { unlockAll: Boolean(gameSettings(gameId).unlockAll) };
+  const count = levels.length;
+  const here = { name: `${gameId}/map` };
 
   // The newest open level, so we can scroll to it and make it bounce.
-  const current = ctx.levels.filter((l) => isUnlocked(profile, l.id, opts) && !levelRecord(profile, l.id).plays)[0]
-    || ctx.levels.filter((l) => isUnlocked(profile, l.id, opts)).slice(-1)[0];
+  const current = levels.filter((l) => isUnlocked(progress, l.id, opts) && !levelRecord(progress, l.id).plays)[0]
+    || levels.filter((l) => isUnlocked(progress, l.id, opts)).slice(-1)[0];
 
-  const stones = ctx.levels.map((level, i) => {
-    const rec = levelRecord(profile, level.id);
-    const open = isUnlocked(profile, level.id, opts);
+  const stones = levels.map((level, i) => {
+    const rec = levelRecord(progress, level.id);
+    const open = isUnlocked(progress, level.id, opts);
     const label = open
       ? `Level ${level.id}, ${level.name}. ${rec.stars} of 3 stars.${rec.best ? ` Best score ${rec.best}.` : ''}`
       : `Level ${level.id}, ${level.name}. Locked.`;
@@ -31,13 +40,13 @@ register('map', () => {
         click: (e) => {
           if (open) {
             ctx.sfx?.play('tap');
-            go('play', { levelId: level.id });
+            go(`${gameId}/play`, { levelId: level.id });
           } else {
             ctx.sfx?.play('soft');
             e.currentTarget.classList.remove('wobble');
             void e.currentTarget.offsetWidth; // restart the animation
             e.currentTarget.classList.add('wobble');
-            const prev = ctx.levels[i - 1];
+            const prev = levels[i - 1];
             ctx.speech.say(`Finish ${prev ? prev.name : 'the level before'} to open this one!`);
           }
         },
@@ -58,19 +67,19 @@ register('map', () => {
 
   const node = screen('map',
     topbar({
-      back: () => go('profiles'),
-      backLabel: 'Change reader',
+      back: () => go('hub'),
+      backLabel: 'Back to the playroom',
       title: 'Level Map',
       actions: [
-        iconButton({ icon: '🏆', label: 'Best readers', onClick: () => go('scores') }),
-        iconButton({ icon: '⚙️', label: 'Grown-ups', onClick: () => go('gate', { next: 'settings', from: 'map' }) }),
+        iconButton({ icon: '🏆', label: scoresLabel, onClick: () => go('scores', { game: gameId, back: here }) }),
+        iconButton({ icon: '⚙️', label: 'Grown-ups', onClick: () => go('gate', { next: 'settings', back: here }) }),
       ],
     }),
     el('div', { class: 'player-bar' },
       avatarBadge(profile, { size: 'md' }),
       el('span', { class: 'player-name', text: profile.name }),
-      el('span', { class: 'player-stat', 'aria-label': `${totalStars(profile)} stars` }, el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${totalStars(profile)}`),
-      el('span', { class: 'player-stat', 'aria-label': `${profile.totalScore} points` }, el('span', { 'aria-hidden': 'true', text: '🪙' }), ` ${profile.totalScore.toLocaleString()}`),
+      el('span', { class: 'player-stat', 'aria-label': `${totalStars(progress)} stars` }, el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${totalStars(progress)}`),
+      el('span', { class: 'player-stat', 'aria-label': `${progress.totalScore} points` }, el('span', { 'aria-hidden': 'true', text: '🪙' }), ` ${progress.totalScore.toLocaleString()}`),
     ),
     msg && notice(msg),
     el('ol', { class: 'level-path', 'aria-label': `${count} levels` }, ...stones),
@@ -104,4 +113,4 @@ register('map', () => {
     focus: node.querySelector('.stone.current'),
     destroy: () => wide.removeEventListener('change', layout),
   };
-});
+};

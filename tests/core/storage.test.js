@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import '../../games/index.js'; // the real games, so per-game settings are checked too
 import {
   createStore, freshRecord, migrate, sanitizeRecord, getBrowserStorage,
-  STORAGE_KEY, BACKUP_KEY, SCHEMA_VERSION,
-} from '../js/storage.js';
-import { addProfile } from '../js/profiles.js';
+  STORAGE_KEY, BACKUP_KEY, SCHEMA_VERSION, MIGRATIONS,
+} from '../../core/storage.js';
+import { addProfile } from '../../core/profiles.js';
+import { gameProgress } from '../../core/progress.js';
 
 function memoryStorage(initial = {}) {
   const data = { ...initial };
@@ -22,12 +24,13 @@ function memoryStorage(initial = {}) {
 function sampleRecord() {
   const r = freshRecord();
   const { profile } = addProfile(r, { name: 'Ava', avatar: 'frog' }, { id: 'a1', now: 1 });
-  profile.totalScore = 420;
-  profile.unlocked = 3;
-  profile.levels = { 1: { stars: 3, best: 200, plays: 2 }, 2: { stars: 1, best: 120, plays: 1 } };
+  const reading = gameProgress(profile, 'reading');
+  reading.totalScore = 420;
+  reading.unlocked = 3;
+  reading.levels = { 1: { stars: 3, best: 200, plays: 2 }, 2: { stars: 1, best: 120, plays: 1 } };
   r.activeProfileId = 'a1';
   r.settings.rate = 1;
-  r.settings.wordCase = 'title';
+  r.settings.games.reading.wordCase = 'title';
   return r;
 }
 
@@ -58,7 +61,7 @@ describe('store', () => {
   });
 
   it('treats wrong shapes as corrupt instead of crashing', () => {
-    for (const bad of ['null', '42', '[]', '"hi"', '{"version":1}', '{"version":1,"profiles":{}}', '{"profiles":[]}', '{"version":99,"profiles":[]}']) {
+    for (const bad of ['null', '42', '[]', '"hi"', '{"version":1}', '{"version":1,"profiles":{}}', '{"version":2}', '{"version":2,"profiles":{}}', '{"profiles":[]}', '{"version":99,"profiles":[]}']) {
       const { status } = createStore(memoryStorage({ [STORAGE_KEY]: bad })).load();
       expect(status, bad).toBe('corrupt');
     }
@@ -69,18 +72,18 @@ describe('store', () => {
     r.profiles.push({ id: 'x', name: '<script>', avatar: 'fox' });
     r.profiles.push('nonsense');
     r.profiles.push({ ...r.profiles[0] }); // duplicate id
-    r.profiles[0].levels['1'].stars = 99;
-    r.profiles[0].levels.hack = { stars: 1 };
-    r.profiles[0].totalScore = -5;
+    r.profiles[0].games.reading.levels['1'].stars = 99;
+    r.profiles[0].games.reading.levels.hack = { stars: 1 };
+    r.profiles[0].games.reading.totalScore = -5;
     r.profiles[0].avatar = 'dragon';
-    r.settings = { rate: 'fast', wordCase: 'SHOUTY', sfx: 'yes', unlockAll: 1 };
+    r.settings = { rate: 'fast', sfx: 'yes', hiddenGames: 'all', games: { reading: { wordCase: 'SHOUTY', unlockAll: 1 } } };
     r.activeProfileId = 'ghost';
     const { record, status } = createStore(memoryStorage({ [STORAGE_KEY]: JSON.stringify(r) })).load();
     expect(status).toBe('repaired');
     expect(record.profiles).toHaveLength(1);
     const p = record.profiles[0];
-    expect(p.levels).toEqual({ 1: { stars: 0, best: 200, plays: 2 }, 2: { stars: 1, best: 120, plays: 1 } });
-    expect(p.totalScore).toBe(0);
+    expect(p.games.reading.levels).toEqual({ 1: { stars: 0, best: 200, plays: 2 }, 2: { stars: 1, best: 120, plays: 1 } });
+    expect(p.games.reading.totalScore).toBe(0);
     expect(p.avatar).toBe('fox');
     expect(record.settings).toEqual(freshRecord().settings);
     expect(record.activeProfileId).toBeNull();
@@ -147,7 +150,7 @@ describe('migrations', () => {
 
   it('the store applies migrations when loading an older record', () => {
     const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({ version: 0, profiles: [] }) });
-    const store = createStore(storage, { migrations: { 0: (r) => ({ ...r, version: 1, settings: { rate: 1.2 } }) } });
+    const store = createStore(storage, { migrations: { ...MIGRATIONS, 0: (r) => ({ ...r, version: 1, settings: { rate: 1.2 } }) } });
     const { record, status } = store.load();
     expect(status).toBe('ok');
     expect(record.settings.rate).toBeCloseTo(1.2);

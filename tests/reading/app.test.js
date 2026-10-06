@@ -2,9 +2,12 @@
 // End-to-end through the real screens, with speech mocked and no network.
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { createMockWindow, VOICES } from './helpers/mockSpeech.js';
+import { createMockWindow, VOICES } from '../helpers/mockSpeech.js';
 
-const levelsJson = JSON.parse(readFileSync(`${process.cwd()}/data/levels.json`, 'utf8'));
+const data = {
+  './data/reading/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/reading/levels.json`, 'utf8')),
+  './data/number-quest/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/number-quest/levels.json`, 'utf8')),
+};
 let mock;
 const requests = [];
 
@@ -28,9 +31,9 @@ beforeAll(async () => {
   Element.prototype.scrollIntoView = () => {};
   globalThis.fetch = async (url) => {
     requests.push(String(url));
-    return { ok: true, json: async () => levelsJson };
+    return { ok: url in data, status: url in data ? 200 : 404, json: async () => data[url] };
   };
-  await import('../js/main.js');
+  await import('../../core/main.js');
   await flush(10);
 });
 
@@ -55,7 +58,12 @@ describe('the game', () => {
     expect(document.querySelector('.form-error').textContent).toMatch(/letters only/);
     input.value = 'Ava';
     button("Let's go").click();
-    expect(app().dataset.screen).toBe('map');
+    // The playroom: Pip greets the reader by name, then they choose the Reading Game.
+    expect(app().dataset.screen).toBe('hub');
+    expect(lastSpoken()).toBe('Hi, Ava! What would you like to play?');
+    expect(document.querySelectorAll('.game-card')).toHaveLength(2);
+    document.querySelector('.game-card[data-game="reading"]').click();
+    expect(app().dataset.screen).toBe('reading/map');
     expect(document.querySelector('.player-name').textContent).toBe('Ava');
     expect(document.querySelectorAll('.stone')).toHaveLength(12);
     expect(document.querySelectorAll('.stone.locked')).toHaveLength(11);
@@ -63,7 +71,7 @@ describe('the game', () => {
 
   it('plays level 1 to the end, with a correction on a wrong tap', async () => {
     document.querySelector('.stone:not(.locked)').click();
-    expect(app().dataset.screen).toBe('play');
+    expect(app().dataset.screen).toBe('reading/play');
     await flush(400);
     let wrongDone = false;
     for (let q = 0; q < 8; q += 1) {
@@ -82,22 +90,25 @@ describe('the game', () => {
       cards.find((c) => c.dataset.word === target).click();
       await flush(5000);
     }
-    expect(app().dataset.screen).toBe('complete');
+    expect(app().dataset.screen).toBe('reading/complete');
     expect(document.querySelector('.complete-title').textContent).toMatch(/Level complete/);
   });
 
   it('saved progress and unlocked level 2', async () => {
-    const saved = JSON.parse(localStorage.getItem('reading-game'));
+    const saved = JSON.parse(localStorage.getItem('pips-playroom'));
     const p = saved.profiles[0];
     expect(p.name).toBe('Ava');
-    expect(p.unlocked).toBe(2);
-    expect(p.levels['1'].stars).toBeGreaterThanOrEqual(1);
-    expect(p.totalScore).toBeGreaterThan(0);
+    expect(p.games.reading.unlocked).toBe(2);
+    expect(p.games.reading.levels['1'].stars).toBeGreaterThanOrEqual(1);
+    expect(p.games.reading.totalScore).toBeGreaterThan(0);
+    // The word missed on purpose is remembered for the grown-ups' progress view.
+    expect(Object.keys(p.games.reading.tricky)).toHaveLength(1);
+    expect(localStorage.getItem('reading-game')).toBeNull();
     button('Map').click();
     expect(document.querySelectorAll('.stone.locked')).toHaveLength(10);
   });
 
   it('never made a network request other than its own level data', () => {
-    expect(requests).toEqual(['./data/levels.json']);
+    expect(requests).toEqual(['./data/reading/levels.json', './data/number-quest/levels.json']);
   });
 });

@@ -1,13 +1,22 @@
+// The "Level complete!" celebration every game shares. Moved from the
+// Reading Game. A game passes its own tally rows (for example
+// [['Words found', 8], ['First try', 7]]); points, star bonus and score follow.
+//
+//   screens: { complete: createLevelComplete('reading') }
+
 import { el } from '../dom.js';
-import { register, go } from '../router.js';
-import { ctx, prefersReducedMotion } from '../context.js';
+import { go } from '../router.js';
+import { ctx, levelsOf, prefersReducedMotion } from '../context.js';
 import { screen } from '../ui.js';
 import { createMascot } from '../mascot.js';
 import { confetti } from '../effects.js';
 
-register('complete', ({ levelId, stars, bonus, base, score, outcome, firstTry, goal }) => {
-  const level = ctx.levels.find((l) => l.id === levelId);
-  const next = ctx.levels.find((l) => l.id === levelId + 1);
+export const createLevelComplete = (gameId) => ({ levelId, stars, bonus, base, score, outcome, tally = [] }) => {
+  const levels = levelsOf(gameId);
+  const level = levels.find((l) => l.id === levelId);
+  if (!level) return { redirect: `${gameId}/map` };
+  const next = levels.find((l) => l.id === levelId + 1);
+  const play = (id) => go(`${gameId}/play`, { levelId: id });
   const calm = prefersReducedMotion();
   const timers = [];
 
@@ -18,12 +27,12 @@ register('complete', ({ levelId, stars, bonus, base, score, outcome, firstTry, g
 
   const buttons = el('div', { class: 'complete-actions' },
     next
-      ? el('button', { type: 'button', class: 'big-button', 'data-autofocus': true, on: { click: () => go('play', { levelId: next.id }) } },
+      ? el('button', { type: 'button', class: 'big-button', 'data-autofocus': true, on: { click: () => play(next.id) } },
         'Next level ', el('span', { 'aria-hidden': 'true', text: '➜' }))
       : null,
-    el('button', { type: 'button', class: `big-button ${next ? 'secondary' : ''}`, on: { click: () => go('play', { levelId }) } },
+    el('button', { type: 'button', class: `big-button ${next ? 'secondary' : ''}`, on: { click: () => play(levelId) } },
       el('span', { 'aria-hidden': 'true', text: '↻ ' }), 'Play again'),
-    el('button', { type: 'button', class: 'big-button secondary', on: { click: () => go('map') } },
+    el('button', { type: 'button', class: 'big-button secondary', on: { click: () => go(`${gameId}/map`) } },
       el('span', { 'aria-hidden': 'true', text: '🗺️ ' }), 'Map'),
   );
 
@@ -34,8 +43,7 @@ register('complete', ({ levelId, stars, bonus, base, score, outcome, firstTry, g
       el('p', { class: 'complete-level', text: `${level.emoji} ${level.name}` }),
       el('div', { class: 'big-stars', role: 'img', 'aria-label': `${stars} of 3 stars` }, ...starEls),
       el('dl', { class: 'tally' },
-        el('div', {}, el('dt', { text: 'Words found' }), el('dd', { text: `${goal}` })),
-        el('div', {}, el('dt', { text: 'First try' }), el('dd', { text: `${firstTry}` })),
+        ...tally.map(([label, value]) => el('div', {}, el('dt', { text: label }), el('dd', { text: `${value}` }))),
         el('div', {}, el('dt', { text: 'Points' }), el('dd', { text: base.toLocaleString() })),
         el('div', {}, el('dt', { text: 'Star bonus' }), el('dd', { text: `+${bonus}` })),
         el('div', { class: 'tally-sum' }, el('dt', { text: 'Score' }), el('dd', {}, total)),
@@ -79,4 +87,4 @@ register('complete', ({ levelId, stars, bonus, base, score, outcome, firstTry, g
       });
     },
   };
-});
+};

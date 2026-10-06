@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { pickTarget, createRound, nextQuestion, answer, isComplete, REVIEW_GAP } from '../js/round.js';
-import { seeded } from './helpers/rng.js';
+import { pickTarget, createRound, nextQuestion, answer, isComplete, REVIEW_GAP } from '../../games/reading/round.js';
+import { seeded } from '../helpers/rng.js';
 
 const level = {
   id: 1,

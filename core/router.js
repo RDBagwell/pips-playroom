@@ -1,5 +1,7 @@
 // A tiny screen router: one screen on show at a time inside #app.
 
+export const APP_TITLE = 'Pip’s Playroom';
+
 const screens = new Map();
 let current = null;
 let root = null;
@@ -9,7 +11,7 @@ export function setRoot(node) {
 }
 
 /**
- * Register a screen. `render(params)` returns { node, title?, destroy?, focus? },
+ * Register a screen. `render(params)` returns { node, title?, appTitle?, destroy?, focus? },
  * or { redirect: 'other-screen' } when it can't be shown right now.
  */
 export function register(name, render) {
@@ -26,7 +28,8 @@ export function go(name, params = {}) {
   current.name = name;
   root.replaceChildren(current.node);
   root.dataset.screen = name;
-  document.title = current.title ? `${current.title} · Reading Game` : 'Reading Game';
+  const suffix = current.appTitle || APP_TITLE;
+  document.title = current.title ? `${current.title} · ${suffix}` : suffix;
   window.scrollTo(0, 0);
   // Move focus to the new screen so keyboard and screen-reader users follow along.
   const target = current.focus || current.node.querySelector('[data-autofocus]') || current.node.querySelector('h1, h2');

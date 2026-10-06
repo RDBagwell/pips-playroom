@@ -1,4 +1,4 @@
-/* Reading Game: a sunny picture-book look.
+/* Pip's Playroom (first made for the Reading Game): a sunny picture-book look.
    Big rounded shapes, soft shadows, warm colours, lots of space. */
 
 @font-face {
@@ -1594,7 +1594,7 @@ button {
 
 .small-button {
   justify-self: start;
-  min-height: 48px;
+  min-height: 64px;
   padding: 6px 18px;
   border: 0;
   border-radius: 999px;

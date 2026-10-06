@@ -1,27 +1,30 @@
-import { el } from '../dom.js';
-import { register, go } from '../router.js';
-import { ctx, activeProfile, settings, save, prefersReducedMotion } from '../context.js';
-import { screen, iconButton } from '../ui.js';
+import { el } from '../../../core/dom.js';
+import { go } from '../../../core/router.js';
+import { ctx, activeProfile, activeProgress, gameSettings, levelsOf, save, prefersReducedMotion } from '../../../core/context.js';
+import { screen, iconButton } from '../../../core/ui.js';
+import { applyLevelResult, isUnlocked, noteTricky } from '../../../core/progress.js';
+import { createMascot } from '../../../core/mascot.js';
+import { confetti, flyPoints } from '../../../core/effects.js';
 import { earlierWords } from '../levels.js';
 import { createRound, nextQuestion, answer } from '../round.js';
 import { starsFor, levelBonus } from '../scoring.js';
-import { applyLevelResult, isUnlocked } from '../progress.js';
 import { pickPraise, askPhrases, correctionPhrases } from '../praise.js';
 import { formatWord } from '../text.js';
-import { createMascot } from '../mascot.js';
-import { confetti, flyPoints } from '../effects.js';
 
 const MIN_CELEBRATE_MS = 900;
+const GAME = 'reading';
 
-register('play', ({ levelId }) => {
+export function playScreen({ levelId }) {
   const profile = activeProfile();
   if (!profile) return { redirect: 'profiles' };
-  const level = ctx.levels.find((l) => l.id === levelId);
-  if (!level || !isUnlocked(profile, level.id, { unlockAll: settings().unlockAll })) return { redirect: 'map' };
+  const playerProgress = activeProgress(GAME);
+  const levels = levelsOf(GAME);
+  const level = levels.find((l) => l.id === levelId);
+  if (!level || !isUnlocked(playerProgress, level.id, { unlockAll: gameSettings(GAME).unlockAll })) return { redirect: `${GAME}/map` };
 
   const { speech } = ctx;
-  const round = createRound(level, { extraPool: earlierWords(ctx.levels, level.id) });
-  const wordCase = settings().wordCase;
+  const round = createRound(level, { extraPool: earlierWords(levels, level.id) });
+  const wordCase = gameSettings(GAME).wordCase;
   let locked = true;
   let destroyed = false;
   let lastPraise = null;
@@ -56,7 +59,7 @@ register('play', ({ levelId }) => {
 
   const node = screen('play',
     el('header', { class: 'topbar play-topbar' },
-      iconButton({ icon: '🗺️', label: 'Back to the map', onClick: () => go('map') }),
+      iconButton({ icon: '🗺️', label: 'Back to the map', onClick: () => go(`${GAME}/map`) }),
       el('h1', { class: 'topbar-title' },
         el('span', { class: 'level-badge', style: { '--stone-color': level.color }, text: level.id }),
         el('span', { class: 'level-name', text: level.name })),
@@ -140,11 +143,13 @@ register('play', ({ levelId }) => {
     const stars = starsFor(round.firstTry, round.goal);
     const bonus = levelBonus(stars);
     const score = round.score + bonus;
-    const outcome = applyLevelResult(profile, level, { score, stars }, ctx.levels.length);
+    const outcome = applyLevelResult(playerProgress, level, { score, stars }, levels.length);
+    // Words missed on the first try, for the grown-ups' progress view.
+    round.missed.forEach((word) => noteTricky(playerProgress, word));
     save();
-    go('complete', {
+    go(`${GAME}/complete`, {
       levelId: level.id, stars, bonus, base: round.score, score, outcome,
-      firstTry: round.firstTry, goal: round.goal,
+      tally: [['Words found', round.goal], ['First try', round.firstTry]],
     });
   }
 
@@ -178,4 +183,4 @@ register('play', ({ levelId }) => {
       speech.stop();
     },
   };
-});
+}

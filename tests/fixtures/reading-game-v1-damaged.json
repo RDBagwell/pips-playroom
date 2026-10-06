@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "settings": { "voiceURI": 42, "rate": "fast", "sfx": "yes", "wordCase": "SHOUTY", "unlockAll": "please" },
+  "profiles": [
+    {
+      "id": "good-1",
+      "name": "Ben",
+      "avatar": "dragon",
+      "createdAt": -4,
+      "unlocked": 3,
+      "levels": { "1": { "stars": 99, "best": 150, "plays": 2 }, "2": { "stars": 2, "best": 90, "plays": 1 }, "__proto__": { "stars": 3 }, "hack": { "stars": 1 } },
+      "totalScore": -5
+    },
+    { "id": "bad-name", "name": "<img src=x onerror=alert(1)>", "avatar": "fox", "unlocked": 2, "levels": {}, "totalScore": 10 },
+    "nonsense",
+    null,
+    { "id": "good-1", "name": "Copy", "avatar": "fox", "unlocked": 1, "levels": {}, "totalScore": 0 },
+    { "name": "No Id", "avatar": "fox" }
+  ],
+  "activeProfileId": "good-1"
+}

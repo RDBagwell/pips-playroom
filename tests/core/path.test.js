@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { snakeCell, snakeLink } from '../js/path.js';
+import { snakeCell, snakeLink } from '../../core/path.js';
 
 describe('level map path', () => {
   it('snakes through the grid', () => {

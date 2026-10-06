@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { pickDistractors, rime, levenshtein, matchesMode, areHomophones } from '../js/distractors.js';
-import { seeded } from './helpers/rng.js';
+import { pickDistractors, rime, levenshtein, matchesMode, areHomophones } from '../../games/reading/distractors.js';
+import { seeded } from '../helpers/rng.js';
 
 const shortA = 'cat hat bat rat mat sat map sad man can fan pan van jam bag tag cap nap dad ran'.split(' ');
 

@@ -1,4 +1,4 @@
-// Builds icons/icon.svg from the mascot drawing in js/mascot.js.
+// Builds icons/icon.svg from the mascot drawing in core/mascot.js.
 // Run: node scripts/make-icon-svg.mjs   (uses jsdom, a dev dependency)
 // The PNG icons were then rasterised from icon.svg with a headless browser
 // (see README → "Icons").
@@ -8,7 +8,7 @@ import { writeFileSync } from 'node:fs';
 const { window } = new JSDOM('<!DOCTYPE html>');
 globalThis.document = window.document;
 globalThis.Node = window.Node;
-const { owlSvg } = await import('../js/mascot.js');
+const { owlSvg } = await import('../core/mascot.js');
 
 const owl = owlSvg();
 owl.removeAttribute('class');

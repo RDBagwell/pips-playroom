@@ -1,4 +1,4 @@
-// Loading and checking the level data in data/levels.json.
+// Loading and checking the Reading Game's level data in data/reading/levels.json.
 
 import { MODES, HETERONYMS, areHomophones } from './distractors.js';
 
@@ -80,7 +80,7 @@ export function earlierWords(levels, levelId) {
   return [...new Set(levels.filter((l) => l.id < levelId).flatMap((l) => l.words))];
 }
 
-export async function loadLevels(url = './data/levels.json', fetchFn = globalThis.fetch) {
+export async function loadLevels(url = './data/reading/levels.json', fetchFn = globalThis.fetch) {
   const res = await fetchFn(url);
   if (!res.ok) throw new Error(`Could not load ${url} (${res.status})`);
   const data = await res.json();

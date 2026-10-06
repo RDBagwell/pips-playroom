@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyLevelResult, isUnlocked, totalStars, levelRecord } from '../js/progress.js';
+import { applyLevelResult, isUnlocked, totalStars, levelRecord } from '../../core/progress.js';
 
 const fresh = () => ({ unlocked: 1, levels: {}, totalScore: 0 });
 const level = (id) => ({ id });

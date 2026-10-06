@@ -1,4 +1,8 @@
 // Player profiles: validation and pure operations on the saved record.
+// A profile is shared by every game; each game's progress lives in
+// profile.games[gameId] (see core/progress.js).
+
+import { totalStars } from './progress.js';
 
 export const NAME_MAX = 12;
 export const MAX_PROFILES = 6;
@@ -60,9 +64,7 @@ export function createProfile({ name, avatar }, { now = Date.now(), id = newId()
     name,
     avatar: avatarFor(avatar).id,
     createdAt: now,
-    unlocked: 1,
-    levels: {},
-    totalScore: 0,
+    games: {},
   };
 }
 
@@ -101,23 +103,30 @@ export function deleteProfile(record, id) {
   return record.profiles.length < before;
 }
 
-export function resetProfile(record, id) {
+/** Reset one game's progress for a reader, or every game when `gameId` is omitted. */
+export function resetProfile(record, id, gameId = null) {
   const profile = record.profiles.find((p) => p.id === id);
   if (!profile) return false;
-  profile.unlocked = 1;
-  profile.levels = {};
-  profile.totalScore = 0;
+  if (gameId) delete profile.games[gameId];
+  else profile.games = {};
   return true;
 }
 
-function starsOf(p) {
-  return Object.values(p.levels).reduce((s, r) => s + (r.stars || 0), 0);
+const ZERO = { totalScore: 0, levels: {} };
+
+/** Score and stars in one game, or across every game when `gameId` is null. */
+export function scoreOf(profile, gameId = null) {
+  const games = gameId ? [profile.games[gameId] || ZERO] : Object.values(profile.games);
+  return {
+    score: games.reduce((s, g) => s + (g.totalScore || 0), 0),
+    stars: games.reduce((s, g) => s + totalStars(g), 0),
+  };
 }
 
-/** "Best Readers on This Device": top `limit` by total score. */
-export function highScores(record, limit = 10) {
+/** "Best Readers on This Device": top `limit` by score in one game (or all games). */
+export function highScores(record, limit = 10, gameId = null) {
   return record.profiles
-    .map((p) => ({ id: p.id, name: p.name, avatar: p.avatar, score: p.totalScore, stars: starsOf(p) }))
+    .map((p) => ({ id: p.id, name: p.name, avatar: p.avatar, ...scoreOf(p, gameId) }))
     .sort((a, b) => b.score - a.score || b.stars - a.stars || a.name.localeCompare(b.name))
     .slice(0, limit);
 }

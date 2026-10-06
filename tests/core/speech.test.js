@@ -3,11 +3,13 @@ import {
   createSpeech,
   pickVoice,
   rankEnglishVoices,
+  usesInternet,
+  hasOnDeviceEnglish,
   clampRate,
   isSpeechSupported,
   DEFAULT_RATE,
-} from '../js/speech.js';
-import { createMockWindow, VOICES } from './helpers/mockSpeech.js';
+} from '../../core/speech.js';
+import { createMockWindow, VOICES } from '../helpers/mockSpeech.js';
 
 describe('voice selection', () => {
   it('prefers en-US over other English voices and never picks by index', () => {
@@ -32,6 +34,64 @@ describe('voice selection', () => {
 
   it('ranks only English voices', () => {
     expect(rankEnglishVoices(VOICES).map((v) => v.voiceURI)).toEqual(['us', 'gb', 'au']);
+  });
+});
+
+describe('privacy: on-device voices first', () => {
+  // Shaped like Chrome on a laptop: its "Google" voices are online
+  // (localService: false), the operating system's voices are on-device.
+  const CHROME = [
+    { name: 'Google US English', lang: 'en-US', voiceURI: 'Google US English', localService: false },
+    { name: 'Google UK English Female', lang: 'en-GB', voiceURI: 'Google UK English Female', localService: false },
+    { name: 'Microsoft Zira', lang: 'en-US', voiceURI: 'zira', localService: true, default: true },
+    { name: 'Microsoft Hazel', lang: 'en-GB', voiceURI: 'hazel', localService: true },
+    { name: 'Google Deutsch', lang: 'de-DE', voiceURI: 'Google Deutsch', localService: false },
+  ];
+
+  it('prefers an on-device voice over an online voice, even an online en-US one', () => {
+    expect(pickVoice(CHROME).voiceURI).toBe('zira');
+    const noLocalUS = CHROME.filter((v) => v.voiceURI !== 'zira');
+    expect(pickVoice(noLocalUS).voiceURI).toBe('hazel');
+  });
+
+  it('ranks every on-device English voice above every online one', () => {
+    expect(rankEnglishVoices(CHROME).map((v) => v.voiceURI)).toEqual(['zira', 'hazel', 'Google US English', 'Google UK English Female']);
+  });
+
+  it('uses an online voice only when there is no on-device English voice', () => {
+    const onlineOnly = CHROME.filter((v) => !v.localService);
+    expect(hasOnDeviceEnglish(onlineOnly)).toBe(false);
+    expect(hasOnDeviceEnglish(CHROME)).toBe(true);
+    const v = pickVoice(onlineOnly);
+    expect(v.voiceURI).toBe('Google US English');
+    expect(usesInternet(v)).toBe(true);
+  });
+
+  it('honours a grown-up who chooses an online voice on purpose', () => {
+    expect(pickVoice(CHROME, 'Google UK English Female').voiceURI).toBe('Google UK English Female');
+  });
+
+  it('prefers an on-device default when there is no English voice at all', () => {
+    const german = [
+      { name: 'Google Deutsch', lang: 'de-DE', voiceURI: 'g', localService: false, default: true },
+      { name: 'Anna', lang: 'de-DE', voiceURI: 'anna', localService: true },
+    ];
+    expect(pickVoice(german).voiceURI).toBe('anna');
+  });
+
+  it('treats voices that do not say as on-device (Safari, Firefox)', () => {
+    expect(usesInternet({ name: 'Samantha', lang: 'en-US' })).toBe(false);
+    expect(usesInternet(null)).toBe(false);
+  });
+
+  it('tells the settings screen when the voice in use goes online', () => {
+    const online = createMockWindow({ voices: CHROME.filter((v) => !v.localService) });
+    expect(createSpeech(online.win).usesInternet).toBe(true);
+    const local = createMockWindow({ voices: CHROME });
+    const speech = createSpeech(local.win);
+    expect(speech.usesInternet).toBe(false);
+    speech.setPreferredVoice('Google US English');
+    expect(speech.usesInternet).toBe(true);
   });
 });
 
