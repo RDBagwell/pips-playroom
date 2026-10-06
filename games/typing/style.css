@@ -1,0 +1,240 @@
+/* Type with Pip. Builds on css/style.css and css/playroom.css. */
+
+.screen-typing {
+  gap: clamp(10px, 2vw, 18px);
+}
+
+.type-area {
+  flex: 1;
+  display: grid;
+  gap: clamp(12px, 2.5vw, 22px);
+  align-content: start;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.type-board {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+/* ----- what to type ----- */
+.type-target {
+  margin: 0;
+  padding: 14px 22px;
+  min-height: 1.6em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  font-size: clamp(2.6rem, 11vw, 4.4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+}
+
+.type-target:focus {
+  outline: none;
+}
+
+.type-sentences {
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+}
+
+.type-target.bump {
+  animation: wobble 420ms ease;
+}
+
+.ch {
+  min-width: 0.55em;
+  text-align: center;
+  border-bottom: 5px solid transparent;
+}
+
+.ch.typed {
+  color: #2e9d5b;
+}
+
+.ch.current {
+  border-bottom-color: var(--grape);
+}
+
+.ch.todo {
+  color: var(--ink);
+}
+
+.ch.space {
+  min-width: 0.6em;
+}
+
+.finger-hint,
+.caps-note,
+.practice-badge {
+  margin: 0;
+  font-weight: 700;
+}
+
+.finger-hint {
+  min-height: 1.4em;
+  color: var(--ink-soft);
+}
+
+.practice-badge {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #efe6ff;
+}
+
+.caps-note {
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+
+/* ----- the keyboard picture ----- */
+.keyboard {
+  --kb: clamp(26px, 6.5vw, 54px);
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #ece3f7;
+}
+
+.kb-halves {
+  display: flex;
+  gap: 18px;
+}
+
+.kb-half {
+  display: grid;
+  gap: 6px;
+}
+
+.kb-right .kb-row {
+  justify-content: flex-start;
+}
+
+.kb-row {
+  display: flex;
+  gap: 6px;
+}
+
+.kb-left .kb-row:nth-child(2) {
+  padding-left: calc(var(--kb) * 0.25);
+}
+
+.kb-left .kb-row:nth-child(3) {
+  padding-left: calc(var(--kb) * 0.5);
+}
+
+.kb-key {
+  width: var(--kb);
+  height: var(--kb);
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 4px 0 #cbbbe2;
+  font-size: calc(var(--kb) * 0.45);
+  font-weight: 700;
+  transition: transform 120ms ease, background-color 200ms ease;
+}
+
+.kb-space {
+  width: calc(var(--kb) * 6);
+  font-size: calc(var(--kb) * 0.3);
+}
+
+/* Finger zones: mirrored colours on each hand. */
+.fingers .kb-key[data-finger$='little'] { background: #ffe0ef; }
+.fingers .kb-key[data-finger$='ring'] { background: #dcefff; }
+.fingers .kb-key[data-finger$='middle'] { background: #dff5e6; }
+.fingers .kb-key[data-finger$='index'] { background: #fff1c9; }
+.finger-hint[data-finger$='little'] { color: #c2437b; }
+.finger-hint[data-finger$='ring'] { color: #2878b5; }
+.finger-hint[data-finger$='middle'] { color: #2e8a52; }
+.finger-hint[data-finger$='index'] { color: #a26a00; }
+
+.kb-key.next {
+  outline: 4px solid var(--grape);
+  outline-offset: 2px;
+  transform: translateY(-3px);
+}
+
+.kb-key.nudge {
+  animation: key-glow 900ms ease 2;
+}
+
+@keyframes key-glow {
+  50% {
+    background: var(--sun);
+    box-shadow: 0 0 0 8px rgba(255, 201, 60, 0.45);
+  }
+}
+
+/* Practice mode: the keys are real buttons, so at least 64px. */
+.keyboard.interactive {
+  --kb: 64px;
+}
+
+/* Narrow screens: one hand's half above the other, so keys stay big. */
+@media (max-width: 760px) {
+  .keyboard.interactive {
+    width: calc(100% + 2 * var(--gutter) - 8px);
+    margin-inline: calc(-1 * var(--gutter) + 4px);
+    padding: 8px 2px;
+  }
+
+  .keyboard.interactive .kb-halves {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .keyboard.interactive .kb-row {
+    gap: 4px;
+  }
+
+  .keyboard.interactive .kb-left .kb-row:nth-child(n) {
+    padding-left: 0;
+  }
+
+  .keyboard.interactive .kb-space {
+    width: min(100%, 320px);
+  }
+}
+
+/* ----- no keyboard ----- */
+.keyboard-card {
+  max-width: 560px;
+  margin: 0 auto;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  text-align: center;
+}
+
+.keyboard-card-icon {
+  margin: 0;
+  font-size: 4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-key.nudge {
+    animation: none;
+    background: var(--sun);
+  }
+
+  .kb-key.next {
+    transform: none;
+  }
+}

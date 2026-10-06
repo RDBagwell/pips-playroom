@@ -14,6 +14,8 @@
 //     settingsSection: (helpers) => node,// optional, shown in the grown-ups' corner
 //     report: (progress, levels) => {...}, // optional, the grown-ups' progress view
 //     stylesheet: './games/reading/style.css', // optional
+//     link: (levels, getGame) => levels, // optional: use another game's loaded data
+//     practises: 'One sentence for the "About these games" page.', // optional
 //   });
 //
 // Screens are registered with the router as `${id}/${name}` (for example
@@ -35,6 +37,7 @@ export function validateGame(game) {
   if (typeof game.data === 'string' && !game.data.startsWith('./')) errors.push('"data" must be a relative path starting with ./');
   if (typeof game.icon !== 'function') errors.push('"icon" must be a function returning an SVG element');
   if (typeof game.loadLevels !== 'function') errors.push('"loadLevels" must be a function');
+  if (game.link !== undefined && typeof game.link !== 'function') errors.push('"link" must be a function');
   if (!game.screens || typeof game.screens !== 'object') {
     errors.push('"screens" must be an object of render functions');
   } else {
@@ -119,6 +122,18 @@ export async function loadAllGames(fetchFn = globalThis.fetch) {
       g.status = 'error';
     }
   }));
+  // Then let games use each other's data (Type with Pip borrows the Reading
+  // Game's words). A game whose link fails is unavailable; the rest still work.
+  for (const g of allGames()) {
+    if (g.status !== 'ready' || typeof g.link !== 'function') continue;
+    try {
+      g.levels = g.link(g.levels, getGame);
+    } catch (err) {
+      console.error(err);
+      g.levels = [];
+      g.status = 'error';
+    }
+  }
   return allGames();
 }
 

@@ -103,7 +103,7 @@ describe('the playroom', () => {
 
   it('shows each game’s own settings section', () => {
     const headings = [...document.querySelectorAll('.settings-section h2')].map((h) => h.textContent);
-    expect(headings).toEqual(['Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', '🌻 Math Garden', 'Privacy']);
+    expect(headings).toEqual(['Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', '🌻 Math Garden', '⌨️ Type with Pip', 'Privacy']);
     expect(document.getElementById('case-title').checked).toBe(true);
     expect(document.body.textContent).toMatch(/were brought over on/);
   });

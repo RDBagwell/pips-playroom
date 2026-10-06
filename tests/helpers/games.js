@@ -2,7 +2,7 @@
 // that load the whole app. One place to update when a game is added.
 import { readFileSync } from 'node:fs';
 
-export const GAME_IDS = ['reading', 'number-quest', 'math-garden'];
+export const GAME_IDS = ['reading', 'number-quest', 'math-garden', 'typing'];
 
 export const DATA = Object.fromEntries(GAME_IDS.map((id) => [
   `./data/${id}/levels.json`,
