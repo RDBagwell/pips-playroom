@@ -2,14 +2,10 @@
 // Number Quest end to end through the real screens: speech and speech
 // recognition are mocked, and there is no network.
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { GAME_IDS, DATA_URLS, fakeFetch } from '../helpers/games.js';
 import { createMockWindow, VOICES } from '../helpers/mockSpeech.js';
 import { createMockRecognition } from '../helpers/mockRecognition.js';
 
-const data = {
-  './data/reading/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/reading/levels.json`, 'utf8')),
-  './data/number-quest/levels.json': JSON.parse(readFileSync(`${process.cwd()}/data/number-quest/levels.json`, 'utf8')),
-};
 let mock;
 let recognition;
 let ctx;
@@ -56,10 +52,7 @@ beforeAll(async () => {
   window.requestAnimationFrame = (fn) => setTimeout(() => fn(performance.now()), 16);
   window.cancelAnimationFrame = (id) => clearTimeout(id);
   Element.prototype.scrollIntoView = () => {};
-  globalThis.fetch = async (url) => {
-    requests.push(String(url));
-    return { ok: url in data, status: url in data ? 200 : 404, json: async () => data[url] };
-  };
+  globalThis.fetch = fakeFetch(requests);
   await import('../../core/main.js');
   ({ ctx } = await import('../../core/context.js'));
   ({ go } = await import('../../core/router.js'));
@@ -218,6 +211,6 @@ describe('Number Quest', () => {
   });
 
   it('never made a network request other than its own level data', () => {
-    expect(requests).toEqual(['./data/reading/levels.json', './data/number-quest/levels.json']);
+    expect(requests).toEqual(DATA_URLS);
   });
 });

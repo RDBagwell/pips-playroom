@@ -1,0 +1,267 @@
+/* Math Garden. Builds on css/style.css and css/playroom.css. */
+
+.screen-math {
+  gap: clamp(10px, 2vw, 18px);
+}
+
+.math-area {
+  flex: 1;
+  display: grid;
+  gap: clamp(12px, 2.5vw, 22px);
+  align-content: start;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.math-board {
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+}
+
+.stopwatch {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ----- pictures ----- */
+.picture-slot {
+  width: 100%;
+  display: grid;
+  justify-items: center;
+}
+
+.picture {
+  display: grid;
+  place-items: center;
+  min-height: 96px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow-soft);
+  max-width: 100%;
+}
+
+.pic-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pic-sign {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+.obj-group {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 6px;
+}
+
+.obj {
+  width: clamp(34px, 9vw, 48px);
+  height: clamp(34px, 9vw, 48px);
+  transition: transform 200ms ease, filter 200ms ease;
+}
+
+.obj-b {
+  filter: hue-rotate(160deg) saturate(1.1);
+}
+
+.obj.gone {
+  opacity: 0.25;
+  filter: grayscale(1);
+  transform: translateY(-6px) rotate(-12deg);
+}
+
+/* Pip counts along: each object glows as it is counted. */
+.counted {
+  outline: 4px solid var(--sun);
+  outline-offset: 2px;
+  border-radius: 12px;
+  transform: scale(1.12);
+}
+
+.ten-frame {
+  display: grid;
+  grid-template-columns: repeat(5, clamp(40px, 11vw, 56px));
+  gap: 4px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #f3ead6;
+}
+
+.frame-cell {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.frame-cell .obj {
+  width: 80%;
+  height: 80%;
+}
+
+.frame-cell.empty {
+  border: 3px dashed #d9c8a3;
+}
+
+.bars {
+  display: flex;
+  gap: 6px;
+}
+
+.ten-bar {
+  display: grid;
+  grid-template-rows: repeat(10, 9px);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 6px;
+  background: #3e9e68;
+}
+
+.bars-b .ten-bar {
+  background: #3799d0;
+}
+
+.ten-cell {
+  width: 14px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.times-grid {
+  display: grid;
+  gap: 4px;
+}
+
+.times-row {
+  display: flex;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+.times-row .obj {
+  width: 30px;
+  height: 30px;
+}
+
+.times-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+/* ----- the question and answers ----- */
+.equation {
+  margin: 0;
+  font-size: clamp(2.6rem, 10vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.math-answers {
+  width: 100%;
+  max-width: 640px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 14px;
+}
+
+.math-answers[data-kind='truefalse'] {
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+}
+
+.math-choice {
+  min-height: 96px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 8px 0 var(--paper-edge), var(--shadow-soft);
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  font-weight: 700;
+  transition: transform 120ms ease, background-color 200ms ease;
+  animation: card-in 300ms cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+.math-choice:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 var(--paper-edge);
+}
+
+.tf {
+  min-height: 120px;
+  gap: 0;
+}
+
+.tf-mark {
+  font-size: clamp(2.6rem, 9vw, 3.4rem);
+  line-height: 1;
+}
+
+.tf-label {
+  font-size: 1.2rem;
+}
+
+.tf-yes {
+  background: #e3f7ea;
+  box-shadow: 0 8px 0 #9fd9b5, var(--shadow-soft);
+}
+
+.tf-no {
+  background: #ffe9e5;
+  box-shadow: 0 8px 0 #f2b4a9, var(--shadow-soft);
+}
+
+.math-choice.tried {
+  background: var(--tried);
+  color: var(--ink-soft);
+}
+
+.math-choice.wrong {
+  animation: wobble 420ms ease;
+}
+
+.math-choice.correct {
+  background: var(--sun);
+  box-shadow: 0 8px 0 var(--sun-edge), var(--shadow-soft);
+  animation: pop 420ms ease-out;
+}
+
+.math-answers.answered .math-choice:not(.correct) {
+  opacity: 0.45;
+}
+
+.show-me {
+  min-height: 72px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .counted {
+    transform: none;
+  }
+
+  .math-choice.wrong {
+    outline: 4px dashed var(--ink-soft);
+    outline-offset: -10px;
+  }
+}
