@@ -161,9 +161,9 @@ export function playScreen({ levelId, practice = false }) {
   // ----- drawing -----
   function render() {
     const chars = [...t.text].map((c, i) => {
-      const state = i < t.index ? 'typed' : i === t.index ? 'current' : 'todo';
-      const show = state === 'typed' || !hidden ? (c === ' ' ? ' ' : c) : (c === ' ' ? ' ' : '_');
-      return el('span', { class: `ch ${state}${c === ' ' ? ' space' : ''}`, 'aria-hidden': 'true', text: show });
+      const state = i < t.index ? 'ch-typed' : i === t.index ? 'ch-current' : 'ch-todo';
+      const show = state === 'ch-typed' || !hidden ? (c === ' ' ? ' ' : c) : (c === ' ' ? ' ' : '_');
+      return el('span', { class: `ch ${state}${c === ' ' ? ' ch-space' : ''}`, 'aria-hidden': 'true', text: show });
     });
     target.replaceChildren(...chars);
     target.setAttribute('aria-label', hidden ? `Spell the word you heard. ${t.index} of ${t.text.length} letters typed.` : `Type: ${t.text}. ${t.index} of ${t.text.length} typed.`);
@@ -204,9 +204,9 @@ export function playScreen({ levelId, practice = false }) {
       misses[expected] = (misses[expected] || 0) + 1;
       ctx.sfx?.play('soft');
       keyboard.nudge(expected);
-      target.classList.remove('bump');
+      target.classList.remove('type-bump');
       void target.offsetWidth;
-      target.classList.add('bump');
+      target.classList.add('type-bump');
       status.textContent = `Look for ${keyName(expected)}.`;
       if (wrongInARow === 3) {
         const finger = fingerFor(expected);

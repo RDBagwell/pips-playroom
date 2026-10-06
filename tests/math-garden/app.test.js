@@ -70,7 +70,7 @@ describe('Math Garden', () => {
         expect(spoken().join(' ')).toMatch(/count/i);
         expect(spoken().join(' ')).toContain(['one', 'two', 'three', 'four', 'five'].slice(0, n).join(', '));
         await flush(900 + n * 520);
-        expect(document.querySelectorAll('.picture .counted')).toHaveLength(n);
+        expect(document.querySelectorAll('.picture .obj-counted')).toHaveLength(n);
         explained = true;
       }
       right.click();

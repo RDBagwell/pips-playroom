@@ -122,7 +122,7 @@ export function playScreen({ levelId }) {
   function stopCounting() {
     countTimers.forEach(clearTimeout);
     countTimers = [];
-    if (picture) picture.countables.forEach((c) => c.classList.remove('counted'));
+    if (picture) picture.countables.forEach((c) => c.classList.remove('obj-counted'));
   }
   function showPicture(fromButton = false) {
     if (!picture) return;
@@ -136,10 +136,10 @@ export function playScreen({ levelId }) {
     if (!picture || !n) return;
     const items = picture.countables.slice(0, n);
     if (calm) {
-      items.forEach((c) => c.classList.add('counted'));
+      items.forEach((c) => c.classList.add('obj-counted'));
       return;
     }
-    items.forEach((c, i) => countTimers.push(later(() => c.classList.add('counted'), 900 + i * COUNT_STEP_MS)));
+    items.forEach((c, i) => countTimers.push(later(() => c.classList.add('obj-counted'), 900 + i * COUNT_STEP_MS)));
   }
 
   // ----- a question -----

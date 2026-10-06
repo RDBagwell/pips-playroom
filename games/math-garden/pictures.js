@@ -76,15 +76,15 @@ export function buildPicture(q) {
     case 'sub': {
       const g = group(q.a, object);
       // The last b objects "go away": faded and crossed, and not counted.
-      g.items.slice(q.a - q.b).forEach((o) => o.classList.add('gone'));
+      g.items.slice(q.a - q.b).forEach((o) => o.classList.add('obj-gone'));
       node = g.node;
       countables = g.items.slice(0, q.a - q.b);
       break;
     }
     case 'bonds': {
       const cells = Array.from({ length: q.b }, (_, i) => (i < q.a
-        ? el('span', { class: 'frame-cell filled' }, objectSvg(object))
-        : el('span', { class: 'frame-cell empty' })));
+        ? el('span', { class: 'frame-cell frame-filled' }, objectSvg(object))
+        : el('span', { class: 'frame-cell frame-empty' })));
       node = el('span', { class: 'ten-frame' }, ...cells);
       countables = cells.slice(q.a);
       break;
