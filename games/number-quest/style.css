@@ -383,6 +383,26 @@
 
 /* Landscape tablets and laptops: Pip beside the board, like the Reading Game. */
 @media (min-width: 820px) and (orientation: landscape) {
+  .quest-helper {
+    gap: 16px;
+    align-self: start;
+  }
+
+  .quest-bubble {
+    flex: none;
+    width: 100%;
+  }
+
+  /* Pip is above the bubble here, so its tail points up at Pip. */
+  .quest-bubble::before {
+    left: 50%;
+    top: -15px;
+    translate: -50% 0;
+    border: 14px solid transparent;
+    border-top: 0;
+    border-bottom: 16px solid var(--paper);
+  }
+
   .quest-area {
     grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
     align-items: start;
@@ -392,6 +412,27 @@
 
 /* Phones held sideways. */
 @media (max-height: 520px) and (orientation: landscape) {
+  .quest-helper {
+    gap: 16px;
+    align-self: start;
+  }
+
+  .quest-bubble {
+    flex: none;
+    width: 100%;
+    font-size: 1.05rem;
+  }
+
+  /* Pip is above the bubble here, so its tail points up at Pip. */
+  .quest-bubble::before {
+    left: 50%;
+    top: -15px;
+    translate: -50% 0;
+    border: 14px solid transparent;
+    border-top: 0;
+    border-bottom: 16px solid var(--paper);
+  }
+
   .quest-area {
     grid-template-columns: 170px minmax(0, 1fr);
     align-items: start;

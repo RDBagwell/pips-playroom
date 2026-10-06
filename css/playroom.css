@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   max-width: 720px;
   margin: 0 auto;
 }
@@ -27,15 +27,19 @@
   line-height: 1.3;
 }
 
+/* The tail points back at Pip, who sits to the bubble's left (a layout
+   that puts Pip above the bubble turns the tail up: see Number Quest). The
+   tail is 16px deep and bubbles sit 16px from Pip, so its tip reaches Pip. */
 .speech-bubble::before {
   content: '';
   position: absolute;
-  left: -12px;
+  left: -15px;
   top: 50%;
   translate: 0 -50%;
-  border: 12px solid transparent;
+  border: 14px solid transparent;
   border-left: 0;
-  border-right-color: var(--paper);
+  border-right: 16px solid var(--paper);
+  filter: drop-shadow(-2px 1px 1px rgba(92, 64, 20, 0.06));
 }
 
 .speech-bubble:empty {

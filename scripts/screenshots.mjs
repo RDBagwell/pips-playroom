@@ -3,14 +3,16 @@
 // It serves this folder itself, plays each game a little on phone and tablet
 // sizes, and saves PNGs to docs/screenshots/. Needs Playwright's Chromium
 // (`npx playwright install chromium`, or PLAYWRIGHT_BROWSERS_PATH set).
-// Fails if a page logs an error, requests anything from another site, or
-// scrolls sideways.
+// Fails if a page logs an error, requests anything from another site,
+// scrolls sideways, a speech bubble's tail doesn't point at Pip, or the
+// grown-ups' panels leave gaps (see lib/layout-checks.mjs).
 
 import { chromium } from '@playwright/test';
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkBubbleTails, checkPanelGaps } from './lib/layout-checks.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const outDir = join(root, 'docs', 'screenshots');
@@ -70,6 +72,9 @@ for (const [name, device] of Object.entries(DEVICES)) {
     if (wide > 1) problems.push(`${name} ${what}: ${wide}px too wide`);
     await page.screenshot({ path: join(outDir, `${name}-${what}.png`) });
   };
+  const layout = async (what, check) => {
+    for (const p of await page.evaluate(`(${check.toString()})()`)) problems.push(`${name} ${what}: ${p}`);
+  };
   const tap = (locator) => locator.first().click({ force: true }); // a few buttons breathe and bounce on purpose
   const home = async () => {
     await page.goto(base);
@@ -92,6 +97,7 @@ for (const [name, device] of Object.entries(DEVICES)) {
   await page.evaluate(seed);
   await home();
   await page.evaluate(() => scrollTo(0, 0));
+  await layout('hub', checkBubbleTails);
   await shot('hub');
 
   // Reading Game: one wrong tap, so the gentle correction shows.
@@ -106,6 +112,7 @@ for (const [name, device] of Object.entries(DEVICES)) {
   const range = await page.locator('.range-label').textContent();
   const m = range.match(/between (\d+) and (\d+)/);
   if (m) await tap(page.locator(`.num-tile[data-n="${Math.floor((Number(m[1]) + Number(m[2])) / 2)}"]`));
+  await layout('number quest', checkBubbleTails);
   await shot('number-quest');
 
   // Math Garden: a wrong answer on an adding level, so Pip counts along.
@@ -136,7 +143,9 @@ for (const [name, device] of Object.entries(DEVICES)) {
   await page.mouse.down();
   await page.waitForTimeout(3300);
   await page.mouse.up();
+  await layout('grown-ups', checkPanelGaps);
   await tap(page.getByRole('button', { name: 'Progress' }));
+  await layout('progress', checkPanelGaps);
   await page.locator('.progress-game[aria-label="Math Garden"]').evaluate((n) => n.scrollIntoView({ block: 'start' }));
   await shot('progress');
   await page.close();
@@ -161,6 +170,29 @@ for (const [name, device] of Object.entries(DEVICES)) {
   for (const c of sentence.slice(0, 6)) await page.keyboard.press(c === ' ' ? 'Space' : c);
   await page.waitForTimeout(500);
   await page.screenshot({ path: join(outDir, 'laptop-typing.png') });
+  const check = async (what, fn) => {
+    for (const p of await page.evaluate(`(${fn.toString()})()`)) problems.push(`laptop ${what}: ${p}`);
+  };
+  await page.getByRole('button', { name: 'Back to the map' }).click({ force: true });
+  await page.getByRole('button', { name: 'Back to the playroom' }).click({ force: true });
+  await page.locator('.game-card[data-game="number-quest"]').click({ force: true });
+  await page.locator('.stone').first().click({ force: true });
+  await page.waitForTimeout(900);
+  await check('number quest', checkBubbleTails);
+  await page.getByRole('button', { name: 'Back to the map' }).click({ force: true });
+  await page.getByRole('button', { name: 'Grown-ups' }).click({ force: true });
+  const hold = await page.locator('.hold-button').boundingBox();
+  await page.mouse.move(hold.x + hold.width / 2, hold.y + hold.height / 2);
+  await page.mouse.down();
+  await page.waitForTimeout(3300);
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+  await check('grown-ups', checkPanelGaps);
+  await page.getByRole('button', { name: 'Progress' }).first().click({ force: true });
+  await check('progress', checkPanelGaps);
+  await page.getByRole('button', { name: 'Back to settings' }).click({ force: true });
+  await page.getByRole('button', { name: 'Read about the games' }).click({ force: true });
+  await check('about', checkPanelGaps);
   await page.close();
 }
 
