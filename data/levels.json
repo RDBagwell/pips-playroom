@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "levels": [
+    {
+      "id": 1,
+      "name": "Cat Camp",
+      "emoji": "🐱",
+      "color": "#FFB84D",
+      "focus": "Short a words",
+      "about": "Three-letter words with the short “a” sound, like c-a-t.",
+      "cards": 3,
+      "distractors": "different-start",
+      "goal": 8,
+      "words": ["cat", "hat", "bat", "rat", "map", "sad", "man", "can", "fan", "pan", "van", "jam", "bag", "tag", "cap", "nap", "dad", "ran", "wag", "ham"]
+    },
+    {
+      "id": 2,
+      "name": "Puppy Park",
+      "emoji": "🐶",
+      "color": "#7CC8F2",
+      "focus": "All the short vowels",
+      "about": "Three-letter words with every short vowel: a, e, i, o, u.",
+      "cards": 4,
+      "distractors": "different-start",
+      "goal": 8,
+      "words": ["dog", "hop", "box", "fox", "log", "pot", "mop", "pig", "big", "dig", "wig", "sit", "six", "fin", "bed", "hen", "pen", "ten", "jet", "web", "leg", "sun", "bug", "cup", "hug", "run", "bus", "mud"]
+    },
+    {
+      "id": 3,
+      "name": "Word Garden",
+      "emoji": "🌷",
+      "color": "#F48FB1",
+      "focus": "First sight words",
+      "about": "Very common words readers learn by sight.",
+      "cards": 4,
+      "distractors": "different-start",
+      "goal": 8,
+      "words": ["the", "and", "is", "you", "see", "go", "I", "it", "in", "me", "we", "my", "up", "no", "he", "on", "at", "am", "to", "do", "look", "like"]
+    },
+    {
+      "id": 4,
+      "name": "Busy Barn",
+      "emoji": "🐮",
+      "color": "#A5D86E",
+      "focus": "Word families",
+      "about": "Short-vowel words and sight words. Wrong choices rhyme, so read the first letter!",
+      "cards": 6,
+      "distractors": "rhyme",
+      "goal": 8,
+      "words": ["cat", "hat", "bat", "rat", "mat", "hop", "top", "mop", "pop", "pig", "big", "dig", "wig", "hen", "pen", "ten", "sun", "run", "fun", "the", "and", "you", "go", "no", "he", "me", "we", "can", "man", "fan"]
+    },
+    {
+      "id": 5,
+      "name": "Shell Shore",
+      "emoji": "🐚",
+      "color": "#5FD3C6",
+      "focus": "sh, ch, th, wh, ck",
+      "about": "Two letters that make one sound.",
+      "cards": 6,
+      "distractors": "look-alike",
+      "goal": 8,
+      "words": ["ship", "shop", "shed", "shell", "fish", "dish", "wish", "chin", "chip", "chop", "chick", "lunch", "that", "this", "them", "then", "thin", "bath", "with", "when", "which", "duck", "back", "sock", "rock", "kick", "neck", "pick"]
+    },
+    {
+      "id": 6,
+      "name": "Frog Pond",
+      "emoji": "🐸",
+      "color": "#6CCB8B",
+      "focus": "Consonant blends",
+      "about": "Two consonants side by side, like fr-og and st-op.",
+      "cards": 6,
+      "distractors": "mixed",
+      "goal": 8,
+      "words": ["frog", "stop", "clap", "jump", "flag", "drum", "crab", "grab", "swim", "spot", "step", "snap", "slip", "sled", "plan", "plum", "trip", "trap", "drip", "flip", "glad", "skip", "best", "nest", "hand", "milk", "lamp", "tent", "gift", "pond"]
+    },
+    {
+      "id": 7,
+      "name": "Cake Castle",
+      "emoji": "🎂",
+      "color": "#C89BE8",
+      "focus": "Silent e",
+      "about": "A silent “e” at the end makes the vowel say its name.",
+      "cards": 9,
+      "distractors": "look-alike",
+      "goal": 8,
+      "words": ["cake", "bake", "lake", "make", "name", "game", "gate", "bike", "kite", "bite", "ride", "hide", "five", "home", "bone", "rope", "nose", "rose", "note", "cute", "cube", "tube", "tune", "mule"]
+    },
+    {
+      "id": 8,
+      "name": "Friendly Forest",
+      "emoji": "🌳",
+      "color": "#8BC34A",
+      "focus": "More sight words",
+      "about": "Tricky words that don't follow the rules. Readers learn them by heart.",
+      "cards": 9,
+      "distractors": "mixed",
+      "goal": 8,
+      "words": ["said", "was", "they", "have", "come", "some", "one", "what", "where", "there", "here", "were", "want", "from", "put", "could", "would", "all", "are", "your", "give", "many", "who", "goes", "into", "today", "again", "very", "pretty"]
+    },
+    {
+      "id": 9,
+      "name": "Rainy Road",
+      "emoji": "☔",
+      "color": "#64B5F6",
+      "focus": "Vowel teams",
+      "about": "Two vowels working together: ai, ay, ee, oa, ow.",
+      "cards": 9,
+      "distractors": "look-alike",
+      "goal": 8,
+      "words": ["rain", "train", "paint", "snail", "wait", "day", "play", "tray", "stay", "feet", "tree", "bee", "green", "sleep", "seed", "queen", "boat", "coat", "goat", "road", "soap", "snow", "grow", "blow", "show", "slow"]
+    },
+    {
+      "id": 10,
+      "name": "Star Farm",
+      "emoji": "⭐",
+      "color": "#FFD54F",
+      "focus": "Bossy r",
+      "about": "The letter r changes the vowel: ar, or, er, ir, ur.",
+      "cards": 9,
+      "distractors": "look-alike",
+      "goal": 8,
+      "words": ["car", "star", "jar", "farm", "park", "shark", "barn", "arm", "dark", "bird", "girl", "shirt", "first", "corn", "horn", "fork", "horse", "storm", "short", "her", "fern", "turn", "surf", "nurse", "purple"]
+    },
+    {
+      "id": 11,
+      "name": "Bunny Hill",
+      "emoji": "🐰",
+      "color": "#FF8A80",
+      "focus": "Two-syllable words",
+      "about": "Longer words with two parts, like rab-bit and sun-set.",
+      "cards": 9,
+      "distractors": "mixed",
+      "goal": 8,
+      "words": ["rabbit", "sunset", "kitten", "picnic", "napkin", "muffin", "basket", "pumpkin", "rocket", "magnet", "pocket", "jacket", "button", "candy", "puppy", "happy", "funny", "sunny", "garden", "tiger", "zebra", "pencil", "window", "yellow", "hello", "apple", "turtle", "monkey", "ladder", "dinner"]
+    },
+    {
+      "id": 12,
+      "name": "Rainbow Mountain",
+      "emoji": "🌈",
+      "color": "#B39DDB",
+      "focus": "Big review",
+      "about": "A challenge mix of everything, plus the words from the very first Reading Game.",
+      "cards": 9,
+      "distractors": "mixed",
+      "goal": 8,
+      "words": ["dog", "cat", "hop", "hat", "bat", "rat", "house", "mouse", "cake", "home", "ball", "box", "fox", "ship", "frog", "bike", "rain", "star", "rabbit", "said", "they", "snow", "moon", "book", "cloud", "down", "kitten", "bird", "where", "jump"]
+    }
+  ]
+}
