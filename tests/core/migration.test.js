@@ -133,9 +133,44 @@ describe('importing the old Reading Game record', () => {
   });
 });
 
+describe('migration 2 → 3', () => {
+  it('gives every reader an empty sticker book, keeping their stars', () => {
+    const v2 = migrate(JSON.parse(REAL), MIGRATIONS, 2);
+    const v3 = migrate(v2, MIGRATIONS, 3);
+    expect(v3.version).toBe(3);
+    expect(v3.profiles.map((p) => p.stickers)).toEqual([{ seen: 0, scenes: {} }, { seen: 0, scenes: {} }]);
+    expect(v3.profiles[0].games.reading.totalScore).toBe(1032);
+  });
+
+  it('upgrades a saved session-1 playroom record in place', () => {
+    const v2 = migrate(JSON.parse(REAL), MIGRATIONS, 2);
+    const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify(v2) });
+    const { record, status } = createStore(storage).load();
+    expect(status).toBe('ok');
+    expect(record.version).toBe(3);
+    expect(record.profiles[0].stickers).toEqual({ seen: 0, scenes: {} });
+  });
+
+  it('checks sticker books like any other saved data', () => {
+    const v2 = migrate(JSON.parse(REAL), MIGRATIONS, 2);
+    const v3 = migrate(v2, MIGRATIONS, 3);
+    v3.profiles[0].stickers = {
+      seen: 999,
+      scenes: {
+        beach: [{ id: 'crab', x: 50, y: 150 }, { id: 'dragon', x: 1, y: 1 }, { id: 'sun', x: 'left', y: 3 }, null],
+        moon: [{ id: 'sun', x: 1, y: 1 }],
+        garden: 'flowers',
+      },
+    };
+    const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify(v3) });
+    const { record } = createStore(storage).load();
+    expect(record.profiles[0].stickers).toEqual({ seen: 0, scenes: { beach: [{ id: 'crab', x: 50, y: 100 }] } });
+  });
+});
+
 describe('migration 1 → 2', () => {
   it('moves progress under games.reading and settings under settings.games.reading', () => {
-    const v2 = migrate(JSON.parse(REAL), MIGRATIONS);
+    const v2 = migrate(JSON.parse(REAL), MIGRATIONS, 2);
     expect(v2.version).toBe(2);
     expect(v2.profiles[0].games.reading.totalScore).toBe(1032);
     expect(v2.profiles[0].levels).toBeUndefined();

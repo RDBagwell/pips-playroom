@@ -8,6 +8,7 @@
 // Version history:
 //   1  the Reading Game's record, saved under "reading-game"
 //   2  the playroom record, saved under "pips-playroom": progress is per game
+//   3  each profile gains a sticker book
 //
 // Players of the old Reading Game keep their progress: the first time the
 // playroom loads on a device that has a "reading-game" record and no
@@ -19,11 +20,12 @@ import { DEFAULT_RATE, clampRate } from './speech.js';
 import { AVATARS, MAX_PROFILES, validateName } from './profiles.js';
 import { MAX_STARS } from './scoring.js';
 import { GAME_ID_RE, allGames, defaultGameSettings, sanitizeGameSettings } from './registry.js';
+import { freshStickerBook, sanitizeStickerBook } from './stickers.js';
 
 export const STORAGE_KEY = 'pips-playroom';
 export const BACKUP_KEY = 'pips-playroom-unreadable-backup';
 export const LEGACY_KEY = 'reading-game';
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 /** Limits that keep a damaged or hostile record from growing without bound. */
 export const MAX_TRICKY = 40;
@@ -66,6 +68,16 @@ export const MIGRATIONS = {
         : p)),
       activeProfileId: r.activeProfileId,
       imports: [],
+    };
+  },
+  // Session 2: a sticker book for every reader (unlocks come from stars, so
+  // existing readers find the stickers they've already earned).
+  2: (r) => {
+    if (!Array.isArray(r.profiles)) throw new Error('Version 2 record has no profiles');
+    return {
+      ...r,
+      version: 3,
+      profiles: r.profiles.map((p) => (isObj(p) ? { ...p, stickers: freshStickerBook() } : p)),
     };
   },
 };
@@ -166,6 +178,7 @@ function sanitizeProfile(p) {
     avatar: AVATARS.some((a) => a.id === p.avatar) ? p.avatar : AVATARS[0].id,
     createdAt: intIn(p.createdAt, 0, 8.64e15, 0),
     games,
+    stickers: sanitizeStickerBook(p.stickers),
   };
 }
 

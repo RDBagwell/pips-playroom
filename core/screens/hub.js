@@ -3,11 +3,14 @@
 
 import { el } from '../dom.js';
 import { register, go } from '../router.js';
-import { ctx, activeProfile, visibleGames, takeNotice } from '../context.js';
+import { ctx, activeProfile, visibleGames, takeNotice, save } from '../context.js';
 import { screen, topbar, iconButton, avatarBadge, notice } from '../ui.js';
 import { createMascot } from '../mascot.js';
+import { confetti } from '../effects.js';
 import { peekProgress, totalStars, allStars } from '../progress.js';
 import { MAX_STARS } from '../scoring.js';
+import { STICKERS, freshStickerBook, unlockedStickers, newStickers, markSeen, nextStickerText } from '../stickers.js';
+import { stickerSvg } from '../sticker-art.js';
 
 export function greeting(name) {
   return `Hi, ${name}! What would you like to play?`;
@@ -58,6 +61,38 @@ register('hub', ({ greet = false } = {}) => {
   });
 
   const total = allStars(profile);
+  if (!profile.stickers) profile.stickers = freshStickerBook();
+  const unlocked = unlockedStickers(total);
+  const fresh = newStickers(profile.stickers, total);
+  const latest = unlocked[unlocked.length - 1];
+
+  const stickerBanner = el('button', {
+    type: 'button', class: 'sticker-banner',
+    on: { click: () => { ctx.sfx?.play('tap'); go('stickers'); } },
+  },
+  el('span', { class: 'sticker-banner-art', 'aria-hidden': 'true' }, latest ? stickerSvg(latest.id) : stickerSvg(STICKERS[0].id, { locked: true })),
+  el('span', { class: 'sticker-banner-text' },
+    el('strong', { text: 'Sticker Book' }),
+    el('span', { text: `${unlocked.length} of ${STICKERS.length} stickers · ${nextStickerText(total)}` })));
+
+  // A gentle celebration for stickers earned since the last visit.
+  let party = null;
+  let partyLines = [];
+  if (fresh.length) {
+    const names = fresh.map((st) => st.name);
+    const said = fresh.length === 1 ? `a ${names[0]}` : `${fresh.length} new stickers`;
+    partyLines = [`You got ${said}!`, 'Put it in your sticker book!'];
+    party = el('section', { class: 'panel sticker-party', 'aria-labelledby': 'party-title' },
+      el('h2', { id: 'party-title', text: fresh.length === 1 ? 'New sticker!' : `${fresh.length} new stickers!` }),
+      el('div', { class: 'party-stickers' }, ...fresh.slice(-4).map((st) => stickerSvg(st.id, { title: st.name }))),
+      el('div', { class: 'party-actions' },
+        el('button', { type: 'button', class: 'big-button', 'data-autofocus': true, on: { click: () => go('stickers') } },
+          el('span', { 'aria-hidden': 'true', text: '📒 ' }), 'Open my sticker book'),
+        el('button', { type: 'button', class: 'big-button secondary', on: { click: () => party.remove() } }, 'Later')));
+    markSeen(profile.stickers, total);
+    save();
+  }
+
   const node = screen('hub',
     topbar({
       back: () => go('profiles'),
@@ -79,12 +114,19 @@ register('hub', ({ greet = false } = {}) => {
         el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${total} in all`),
     ),
     msg && notice(msg),
+    party,
+    stickerBanner,
     cards.length
       ? el('ul', { class: 'game-grid', role: 'list', 'aria-label': 'Games' }, ...cards)
       : el('p', { class: 'panel empty', text: 'A grown-up has put the games away for now. Ask them to switch one on in ⚙️ settings.' }),
   );
 
-  if (greet) ctx.speech.say(hello);
+  const lines = [greet ? hello : null, ...partyLines].filter(Boolean);
+  if (lines.length) ctx.speech.say(lines);
+  if (party) {
+    ctx.sfx?.play('fanfare');
+    requestAnimationFrame(() => party.isConnected && confetti(party.querySelector('.party-stickers'), { count: 26 }));
+  }
 
-  return { node, title: 'Playroom', focus: node.querySelector('.game-card') };
+  return { node, title: 'Playroom', focus: party ? party.querySelector('[data-autofocus]') : node.querySelector('.game-card') };
 });

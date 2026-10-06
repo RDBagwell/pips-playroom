@@ -6,7 +6,9 @@
 
 import { el } from '../dom.js';
 import { go } from '../router.js';
-import { ctx, levelsOf, prefersReducedMotion } from '../context.js';
+import { ctx, levelsOf, activeProfile, prefersReducedMotion } from '../context.js';
+import { allStars } from '../progress.js';
+import { freshStickerBook, newStickers, nextStickerText } from '../stickers.js';
 import { screen } from '../ui.js';
 import { createMascot } from '../mascot.js';
 import { confetti } from '../effects.js';
@@ -24,6 +26,13 @@ export const createLevelComplete = (gameId) => ({ levelId, stars, bonus, base, s
     el('span', { class: `big-star${n <= stars ? ' earned' : ''}`, style: { '--n': String(n) }, 'aria-hidden': 'true', text: '★' }));
   const total = el('span', { class: 'tally-total', text: calm ? score.toLocaleString() : '0' });
   const newBest = outcome.newBest ? el('p', { class: 'new-best', text: 'New best!' }) : null;
+  // Stars from every game feed the sticker book.
+  const profile = activeProfile();
+  const allTheStars = profile ? allStars(profile) : 0;
+  const book = profile ? (profile.stickers ||= freshStickerBook()) : freshStickerBook();
+  const stickerNews = newStickers({ ...book }, allTheStars).length
+    ? el('p', { class: 'sticker-news', text: '📒 A new sticker is waiting in the playroom!' })
+    : el('p', { class: 'sticker-news quiet', text: `📒 ${nextStickerText(allTheStars)}` });
 
   const buttons = el('div', { class: 'complete-actions' },
     next
@@ -49,6 +58,7 @@ export const createLevelComplete = (gameId) => ({ levelId, stars, bonus, base, s
         el('div', { class: 'tally-sum' }, el('dt', { text: 'Score' }), el('dd', {}, total)),
       ),
       newBest,
+      stickerNews,
       outcome.unlockedNext && next ? el('p', { class: 'unlocked', text: `${next.emoji} ${next.name} is open!` }) : null,
       buttons,
     ),

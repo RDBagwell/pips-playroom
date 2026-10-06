@@ -58,8 +58,14 @@ describe('the playroom', () => {
   it('greets the reader by name and shows stars per game and in all', () => {
     document.querySelector('.profile-tile').click();
     expect(app().dataset.screen).toBe('hub');
-    expect(lastSpoken()).toBe('Hi, Ava! What would you like to play?');
+    const said = mock.spoken.slice(-3).map((u) => u.text);
+    expect(said[0]).toBe('Hi, Ava! What would you like to play?');
     expect(document.querySelector('.speech-bubble').textContent).toBe('Hi, Ava! What would you like to play?');
+    // Ava's 6 Reading Game stars already unlock 3 stickers (at 1, 3 and 5 stars): a celebration, once.
+    expect(said.slice(1)).toEqual(['You got 3 new stickers!', 'Put it in your sticker book!']);
+    expect(document.querySelector('.sticker-party h2').textContent).toBe('3 new stickers!');
+    expect(document.querySelector('.sticker-banner').textContent).toMatch(/3 of 24 stickers · 2 more stars for the next sticker!/);
+    expect(JSON.parse(localStorage.getItem('pips-playroom')).profiles[0].stickers.seen).toBe(3);
     expect(document.querySelector('.player-bar').textContent).toMatch(/6 in all/);
     const cards = [...document.querySelectorAll('.game-card')];
     expect(cards.map((c) => c.dataset.game)).toEqual(GAME_IDS);
