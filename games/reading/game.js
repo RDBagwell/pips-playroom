@@ -15,6 +15,7 @@ export const reading = {
   id: 'reading',
   title: 'Reading Game',
   tagline: 'Listen, look, and find the word!',
+  practises: 'Early reading: hearing a word and finding it among look-alikes, following a standard phonics order from short-a words to two-syllable words, with common sight words.',
   color: '#4DB6F0',
   icon: readingIcon,
   data: './data/reading/levels.json',

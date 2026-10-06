@@ -6,9 +6,10 @@ import { el } from '../../core/dom.js';
 import { createLevelMap } from '../../core/screens/level-map.js';
 import { createLevelComplete } from '../../core/screens/level-complete.js';
 import { section, toggle, table } from '../../core/settings-ui.js';
-import { levelRecord, trickiest } from '../../core/progress.js';
+import { levelRecord } from '../../core/progress.js';
 import { onDeviceRecognizer, onDeviceStatus, installOnDevice, STATUS_TEXT } from '../../core/recognition.js';
 import { validateQuestLevels, normalizeQuestLevels } from './levels.js';
+import { trickyRanges } from './logic.js';
 import { playScreen } from './screens/play.js';
 import { numberQuestIcon } from './icon.js';
 
@@ -81,6 +82,7 @@ export const numberQuest = {
   id: 'number-quest',
   title: 'Number Quest',
   tagline: 'Pip is thinking of a number. Can you find it?',
+  practises: 'Number order and comparing (bigger, smaller), reading numerals up to 100, and the “start in the middle” halving strategy.',
   color: '#5CC689',
   icon: numberQuestIcon,
   data: './data/number-quest/levels.json',
@@ -164,12 +166,12 @@ export const numberQuest = {
       skillsTitle: 'Number skills',
       skills,
       levels: levels.map((l) => ({ name: `${l.emoji} ${l.name}`, detail: l.focus, ...levelRecord(progress, l.id) })),
-      trickyTitle: 'Numbers to compare',
-      trickyHint: 'Pairs your child mixed up: Pip had said “higher” or “lower”, and they then tapped a number on the wrong side. Asking “which is bigger?” with these pairs helps.',
-      tricky: trickiest(progress, 8).map(([key, times]) => {
-        const [a, b] = key.split('|');
-        return { label: `${a} and ${b}`, detail: `which is bigger? mixed up ${times} ${times === 1 ? 'time' : 'times'}` };
-      }),
+      trickyTitle: 'Number ranges to practise',
+      trickyHint: 'Where your child mixed up bigger and smaller: Pip had said “higher” or “lower”, and they then tapped a number on the wrong side. Comparing pairs of numbers from these ranges (“which is bigger?”) helps.',
+      tricky: trickyRanges(progress.tricky).slice(0, 6).map(({ range, times, example }) => ({
+        label: `Numbers ${range[0]}–${range[1]}`,
+        detail: `mixed up ${times} ${times === 1 ? 'time' : 'times'}, e.g. ${example[0]} and ${example[1]}`,
+      })),
     };
   },
 };

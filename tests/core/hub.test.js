@@ -109,9 +109,21 @@ describe('the playroom', () => {
 
   it('shows each game’s own settings section', () => {
     const headings = [...document.querySelectorAll('.settings-section h2')].map((h) => h.textContent);
-    expect(headings).toEqual(['Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', '🌻 Math Garden', '⌨️ Type with Pip', 'Privacy']);
+    expect(headings).toEqual(['About these games', 'Voice', 'Sounds', 'Games in the playroom', 'Readers', '📖 Reading Game', '🔢 Number Quest', '🌻 Math Garden', '⌨️ Type with Pip', 'Privacy']);
     expect(document.getElementById('case-title').checked).toBe(true);
     expect(document.body.textContent).toMatch(/were brought over on/);
+  });
+
+  it('explains the games and the privacy approach in plain language', () => {
+    button('Read about the games').click();
+    expect(app().dataset.screen).toBe('about');
+    const text = document.querySelector('.about').textContent;
+    for (const t of ['Reading Game', 'Number Quest', 'Math Garden', 'Type with Pip']) expect(text).toContain(t);
+    expect(text).toMatch(/Nothing leaves this device/);
+    expect(text).toMatch(/on-device only/);
+    expect(text).toMatch(/no random prizes/);
+    label('Back to settings').click();
+    expect(app().dataset.screen).toBe('settings');
   });
 
   it('shows a progress view per child, on screen only', () => {
@@ -121,8 +133,12 @@ describe('the playroom', () => {
     const reading = document.querySelector('.progress-game[aria-label="Reading Game"]');
     expect(reading.textContent).toMatch(/Levels completed3 of 12/);
     expect(reading.textContent).toMatch(/Words to practise/);
+    for (const g of ['Math Garden', 'Type with Pip']) expect(document.querySelector(`.progress-game[aria-label="${g}"]`)).not.toBeNull();
+    expect(document.querySelector('.progress-game[aria-label="Math Garden"]').textContent).toMatch(/Fact families to practise/);
+    expect(document.querySelector('.progress-game[aria-label="Type with Pip"]').textContent).toMatch(/Keys to practise/);
+    expect(document.querySelector('.player-bar').textContent).toMatch(/3 of 24 stickers/);
     const quest = document.querySelector('.progress-game[aria-label="Number Quest"]');
-    expect(quest.textContent).toMatch(/Numbers to compare/);
+    expect(quest.textContent).toMatch(/Number ranges to practise/);
     // No way to export, share, print or download it.
     const buttons = [...document.querySelectorAll('button')].map((b) => b.textContent).join(' ');
     expect(buttons).not.toMatch(/export|share|print|download|copy|send|email/i);

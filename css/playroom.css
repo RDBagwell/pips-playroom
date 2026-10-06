@@ -418,3 +418,33 @@
   font-weight: 700;
   color: var(--ink-soft);
 }
+
+/* ----- about ----- */
+.about-games {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.about-game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.about-principles {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.about-principles dt {
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.about-principles dd {
+  margin: 0;
+}

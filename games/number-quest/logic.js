@@ -168,3 +168,37 @@ export function hintPhrases(hint) {
   if (hint.onlyOne) return [`There's only one number left. It must be ${hint.low}!`];
   return ['Try a number in the middle!', `How about ${hint.middle}?`];
 }
+
+/** The range of ten a number sits in, for grown-ups: 7 → [1, 9], 24 → [20, 29], 100 → [90, 100]. */
+export function rangeOf(n) {
+  if (n < 10) return [Math.min(n, 1), 9];
+  if (n >= 100) return [90, 100];
+  const lo = Math.floor(n / 10) * 10;
+  return [lo, lo + 9];
+}
+
+/**
+ * Group mixed-up pairs ("20|30" → times) into ranges of ten, by the bigger
+ * number of each pair: [{ range: [20, 29], times, example: [24, 27] }],
+ * most mixed-up first.
+ */
+export function trickyRanges(tricky) {
+  const groups = new Map();
+  for (const [key, times] of Object.entries(tricky || {})) {
+    const m = key.match(/^(\d+)\|(\d+)$/);
+    if (!m) continue;
+    const pair = [Number(m[1]), Number(m[2])];
+    const range = rangeOf(Math.max(...pair));
+    const id = range.join('-');
+    const g = groups.get(id) || { range, times: 0, example: pair, exampleTimes: 0 };
+    g.times += times;
+    if (times > g.exampleTimes) {
+      g.example = pair;
+      g.exampleTimes = times;
+    }
+    groups.set(id, g);
+  }
+  return [...groups.values()]
+    .sort((a, b) => b.times - a.times || a.range[0] - b.range[0])
+    .map(({ range, times, example }) => ({ range, times, example }));
+}
