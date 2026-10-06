@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "levels": [
+    {
+      "id": 1,
+      "name": "Ladybug Meadow",
+      "emoji": "🐞",
+      "color": "#FF7A6B",
+      "focus": "Numbers 1 to 5, with dot pictures",
+      "about": "Every number has its dots beside it, so your child can count to check. Higher and lower start here.",
+      "min": 1,
+      "max": 5,
+      "rounds": 3,
+      "dots": true,
+      "hintAfter": 2
+    },
+    {
+      "id": 2,
+      "name": "Bunny Burrow",
+      "emoji": "🐰",
+      "color": "#FF9ED2",
+      "focus": "Numbers 1 to 10, with ten-frames",
+      "about": "Dots in a ten-frame (two rows of five) show how big each number is.",
+      "min": 1,
+      "max": 10,
+      "rounds": 4,
+      "dots": true
+    },
+    {
+      "id": 3,
+      "name": "Fishy Pond",
+      "emoji": "🐟",
+      "color": "#4DB6F0",
+      "focus": "Numbers 1 to 20: the teens",
+      "about": "Comparing teen numbers with the numbers below ten.",
+      "min": 1,
+      "max": 20,
+      "rounds": 4
+    },
+    {
+      "id": 4,
+      "name": "Rocket Ridge",
+      "emoji": "🚀",
+      "color": "#9B7BE6",
+      "focus": "Numbers 1 to 30: tens and ones",
+      "about": "Twenties and thirties. Pip’s hint shows the middle when the line gets long.",
+      "min": 1,
+      "max": 30,
+      "rounds": 4
+    },
+    {
+      "id": 5,
+      "name": "Treasure Island",
+      "emoji": "🏝️",
+      "color": "#5CC689",
+      "focus": "Numbers 1 to 50, on the number pad",
+      "about": "Typing two-digit numbers. Starting in the middle (25) finds the number fastest.",
+      "min": 1,
+      "max": 50,
+      "rounds": 5,
+      "pad": true,
+      "hintAfter": 2
+    },
+    {
+      "id": 6,
+      "name": "Star Castle",
+      "emoji": "🏰",
+      "color": "#FFC93C",
+      "focus": "Numbers 1 to 100: the halving strategy",
+      "about": "Start in the middle and halve what’s left each time: any number from 1 to 100 can be found in 7 guesses.",
+      "min": 1,
+      "max": 100,
+      "rounds": 5,
+      "pad": true,
+      "hintAfter": 2
+    }
+  ]
+}

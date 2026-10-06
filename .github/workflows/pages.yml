@@ -2,7 +2,7 @@ name: Test and deploy
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -27,7 +27,7 @@ jobs:
 
   deploy:
     needs: test
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -38,11 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Collect the static site
-        # Only the files the game needs: no tests, tooling or node_modules.
+        # Only the files the playroom needs: no tests, tooling or node_modules.
         run: |
           mkdir _site
-          cp -r index.html manifest.webmanifest css js data fonts icons _site/
-          rm -f _site/data/README.md
+          cp -r index.html manifest.webmanifest css core games data fonts icons _site/
+          find _site -name README.md -delete
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

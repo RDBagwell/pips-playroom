@@ -1,0 +1,205 @@
+/* The playroom hub, the grown-ups' progress view and other shared additions.
+   Builds on css/style.css (the Reading Game's look). */
+
+/* ----- hub ----- */
+.hub-hello {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.hub-hello .mascot {
+  width: clamp(96px, 22vw, 150px);
+}
+
+.speech-bubble {
+  position: relative;
+  margin: 0;
+  padding: 14px 20px;
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  font-size: clamp(1.2rem, 3.6vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  translate: 0 -50%;
+  border: 12px solid transparent;
+  border-left: 0;
+  border-right-color: var(--paper);
+}
+
+.speech-bubble:empty {
+  visibility: hidden;
+}
+
+.game-grid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(16px, 3vw, 28px);
+}
+
+.game-card {
+  width: 100%;
+  min-height: 240px;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  padding: 18px 16px 22px;
+  border: 0;
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--game-color) 28%, transparent), transparent 62%),
+    var(--paper);
+  color: var(--ink);
+  box-shadow: 0 9px 0 color-mix(in srgb, var(--game-color) 70%, #5c4014), var(--shadow-soft);
+  border-top: 10px solid var(--game-color);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.game-card:active {
+  transform: translateY(6px);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--game-color) 70%, #5c4014), var(--shadow-soft);
+}
+
+@media (hover: hover) {
+  .game-card:hover {
+    transform: translateY(-3px) rotate(-0.6deg);
+  }
+}
+
+.game-card.unavailable {
+  filter: grayscale(0.8);
+  opacity: 0.7;
+}
+
+.game-card-art .game-icon {
+  width: clamp(130px, 34vw, 190px);
+  height: auto;
+}
+
+.game-card-title {
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.game-card-tagline {
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  max-width: 26ch;
+}
+
+.game-card-stars {
+  margin-top: 4px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: var(--paper-2);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+/* ----- best scores tabs ----- */
+.score-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.score-tabs .small-button[aria-pressed='true'] {
+  background: var(--sun);
+  box-shadow: 0 4px 0 var(--sun-edge);
+}
+
+/* ----- grown-ups' corner ----- */
+.notice-warn {
+  background: #fff1d6;
+  border: 2px solid var(--sun-edge);
+  text-align: left;
+}
+
+.voice-answers {
+  display: grid;
+  gap: 10px;
+}
+
+.reader-actions {
+  flex-wrap: wrap;
+}
+
+.progress-game h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-game-icon .game-icon {
+  width: 64px;
+  height: auto;
+}
+
+.progress-summary {
+  max-width: none;
+}
+
+.progress-skill-list,
+.tricky-list,
+.progress-levels {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: 8px;
+}
+
+.tricky-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tricky-item {
+  display: grid;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--paper-2);
+}
+
+.tricky-item strong {
+  font-size: 1.3rem;
+}
+
+.progress-level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+}
+
+.progress-level-name {
+  display: grid;
+  min-width: 12em;
+}
+
+.progress-level-name small,
+.progress-level-plays,
+.tricky-item small {
+  color: var(--ink-soft);
+}
