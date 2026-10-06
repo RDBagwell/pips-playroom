@@ -64,13 +64,13 @@ describe('Type with Pip', () => {
         press('Backspace');
         press('Shift');
         press(letter, { repeat: true }); // auto-repeat never counts
-        expect(document.querySelector('.ch').classList.contains('typed')).toBe(false);
+        expect(document.querySelector('.ch').classList.contains('ch-typed')).toBe(false);
         expect(document.querySelector(`.kb-key.nudge[data-key="${letter}"]`)).not.toBeNull();
         press(letter.toUpperCase(), { shiftKey: true }); // a capital is fine
       } else {
         press(letter);
       }
-      expect(document.querySelector('.ch').classList.contains('typed')).toBe(true);
+      expect(document.querySelector('.ch').classList.contains('ch-typed')).toBe(true);
       await flush(4000);
     }
     expect(app().dataset.screen).toBe('typing/complete');
@@ -125,7 +125,7 @@ describe('Type with Pip', () => {
     const sentence = targetText();
     expect(sentence).toMatch(/^[a-zI ]+\.$/);
     for (const c of sentence) press(c);
-    expect(document.querySelectorAll('.type-target .ch.typed')).toHaveLength(sentence.length);
+    expect(document.querySelectorAll('.type-target .ch.ch-typed')).toHaveLength(sentence.length);
   });
 
   it('on a touch-only device, says it needs a keyboard and offers tapping as practice', async () => {
@@ -144,7 +144,7 @@ describe('Type with Pip', () => {
     const keyButton = document.querySelector(`button.kb-key[data-key="${letter}"]`);
     expect(keyButton).not.toBeNull();
     keyButton.click();
-    expect(document.querySelector('.ch').classList.contains('typed')).toBe(true);
+    expect(document.querySelector('.ch').classList.contains('ch-typed')).toBe(true);
   });
 
   it('starts the normal game as soon as a real key is pressed on that device', async () => {

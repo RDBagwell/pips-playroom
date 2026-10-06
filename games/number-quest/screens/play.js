@@ -114,7 +114,7 @@ export function playScreen({ levelId }) {
         padKey('0', () => typeDigit('0')),
         padKey('✓', () => submitEntry(), { class: 'pad-go', label: 'Guess' })))
     : null;
-  const typed = level.pad ? null : el('p', { class: 'typed', 'aria-live': 'polite' });
+  const typed = level.pad ? null : el('p', { class: 'quest-typed', 'aria-live': 'polite' });
 
   const hintButton = el('button', { type: 'button', class: 'big-button secondary hint-button', hidden: true, 'aria-keyshortcuts': 'H', on: { click: showHint } },
     el('span', { 'aria-hidden': 'true', text: '💡 ' }), 'Pip’s hint');
@@ -159,8 +159,8 @@ export function playScreen({ levelId }) {
     const pct = (k) => `${(k / size) * 100}%`;
     cloudLeft.style.setProperty('width', pct(low - min));
     cloudRight.style.setProperty('width', pct(max - high));
-    cloudLeft.classList.toggle('empty', low === min);
-    cloudRight.classList.toggle('empty', high === max);
+    cloudLeft.classList.toggle('cloud-empty', low === min);
+    cloudRight.classList.toggle('cloud-empty', high === max);
     const markers = quest.guesses.map((g) => el('span', {
       class: `track-flag${g === quest.target && quest.found ? ' found' : ''}`,
       style: { left: `${((g - min + 0.5) / size) * 100}%` },

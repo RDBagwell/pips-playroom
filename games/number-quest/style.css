@@ -7,6 +7,7 @@
 .quest-area {
   flex: 1;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(12px, 2.5vw, 22px);
   align-content: start;
   width: 100%;
@@ -98,7 +99,7 @@
   transition: width 500ms cubic-bezier(0.3, 1.2, 0.5, 1);
 }
 
-.track-cloud.empty {
+.track-cloud.cloud-empty {
   box-shadow: none;
 }
 
@@ -271,7 +272,7 @@
   max-width: 15px;
 }
 
-.typed {
+.quest-typed {
   min-height: 1.6em;
   margin: 0;
   font-size: 1.5rem;
