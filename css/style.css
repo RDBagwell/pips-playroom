@@ -1526,11 +1526,17 @@ button {
 }
 
 .settings-grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-  align-items: start;
+  /* Columns, not grid rows: in rows, a short panel left a gap beside a tall
+     one. Panels flow down the first column, then the next. */
+  columns: 2 420px;
+  column-gap: 20px;
   padding-bottom: 32px;
+}
+
+.settings-grid > * {
+  break-inside: avoid;
+  margin: 0 0 20px;
+  width: 100%;
 }
 
 .settings-section {
