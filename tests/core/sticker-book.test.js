@@ -75,7 +75,7 @@ describe('the sticker book', () => {
     placed = document.querySelector('.placed[data-id="fish"]');
     placed.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
     expect(saved().stickers.scenes.beach).toEqual([{ id: 'fish', x: 34, y: 39 }]);
-    expect(document.querySelector('.placed[data-id="fish"]').style.left).toBe('34%');
+    expect(document.querySelector('.placed[data-id="fish"]').style.getPropertyValue('--x')).toBe('34%');
     document.querySelector('.placed[data-id="fish"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Delete', bubbles: true }));
     expect(document.querySelector('.placed')).toBeNull();
     expect(saved().stickers.scenes.beach).toEqual([]);

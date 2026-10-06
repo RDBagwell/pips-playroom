@@ -45,7 +45,8 @@ register('stickers', ({ scene: sceneId = SCENES[0].id } = {}) => {
       const b = el('button', {
         type: 'button',
         class: `placed${i === selected ? ' chosen' : ''}`,
-        style: { left: `${p.x}%`, top: `${p.y}%` },
+        // Saved as the centre in %; CSS keeps the whole sticker on the page (see .placed).
+        style: { '--x': `${p.x}%`, '--y': `${p.y}%` },
         'aria-label': `${s.name} sticker${i === selected ? ', chosen. Arrow keys move it, Delete takes it off' : ''}`,
         'aria-pressed': String(i === selected),
         dataset: { index: String(i), id: p.id },
@@ -101,8 +102,8 @@ register('stickers', ({ scene: sceneId = SCENES[0].id } = {}) => {
       if (Math.abs(ev.clientX - drag.x0) + Math.abs(ev.clientY - drag.y0) > 4) drag.moved = true;
       const x = Math.min(100, Math.max(0, ((ev.clientX - r.left) / r.width) * 100));
       const y = Math.min(100, Math.max(0, ((ev.clientY - r.top) / r.height) * 100));
-      b.style.left = `${x}%`;
-      b.style.top = `${y}%`;
+      b.style.setProperty('--x', `${x}%`);
+      b.style.setProperty('--y', `${y}%`);
       drag.x = x;
       drag.y = y;
     };
@@ -191,13 +192,15 @@ register('stickers', ({ scene: sceneId = SCENES[0].id } = {}) => {
   const node = screen('stickers',
     topbar({ title: 'Sticker Book', back: () => go('hub'), backLabel: 'Back to the playroom' }),
     el('p', { class: 'sticker-count' },
-      el('strong', { text: `${unlocked.length} of ${STICKERS.length} stickers` }), ' · ', nextStickerText(stars),
-      next ? el('span', { class: 'next-sticker', 'aria-hidden': 'true' }, stickerSvg(next.sticker.id, { locked: true })) : null),
+      el('strong', { text: `${unlocked.length} of ${STICKERS.length} stickers` }),
+      el('span', { class: 'next-sticker' }, nextStickerText(stars),
+        next ? el('span', { class: 'next-sticker-art', 'aria-hidden': 'true' }, stickerSvg(next.sticker.id, { locked: true })) : null)),
     el('div', { class: 'scene-tabs', role: 'group', 'aria-label': 'Pages' },
+      // Short labels on screens too short for the long ones (see playroom.css).
       ...SCENES.map((s) => el('button', {
-        type: 'button', class: 'small-button', 'aria-pressed': String(s.id === scene.id),
+        type: 'button', class: 'small-button', 'aria-pressed': String(s.id === scene.id), 'aria-label': s.name,
         on: { click: () => go('stickers', { scene: s.id }) },
-      }, s.name))),
+      }, el('span', { class: 'tab-long', text: s.name }), el('span', { class: 'tab-short', 'aria-hidden': 'true', text: s.short })))),
     page,
     takeOff,
     unlocked.length

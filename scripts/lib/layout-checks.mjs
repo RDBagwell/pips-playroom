@@ -52,3 +52,27 @@ export function checkPanelGaps(maxGap = 24) {
   }
   return problems;
 }
+
+/** On the sticker book: every placed sticker is fully on its page, and the page fits on screen. */
+export function checkStickerPage() {
+  const problems = [];
+  const scene = document.querySelector('.scene');
+  if (!scene) return problems;
+  const s = scene.getBoundingClientRect();
+  for (const p of scene.querySelectorAll('.placed')) {
+    const r = p.getBoundingClientRect();
+    const cut = Math.max(s.left - r.left, r.right - s.right, s.top - r.top, r.bottom - s.bottom);
+    if (cut > 1) problems.push(`the ${p.dataset.id} sticker is cut off by ${Math.round(cut)}px`);
+  }
+  // The whole page is in view without scrolling, so a child sees every sticker they place.
+  const bottom = s.bottom + scrollY;
+  if (bottom > innerHeight + 1) problems.push(`the page's bottom edge is ${Math.round(bottom - innerHeight)}px below the screen`);
+  for (const b of document.querySelectorAll('.tray-sticker, .scene-tabs button')) {
+    const r = b.getBoundingClientRect();
+    if (r.right > innerWidth + 1 || r.left < -1) problems.push(`"${b.getAttribute('aria-label') || b.textContent}" sticks out sideways`);
+    if (r.width < 63.5 || r.height < 63.5) problems.push(`"${b.getAttribute('aria-label') || b.textContent}" is smaller than 64px (${Math.round(r.width)}×${Math.round(r.height)})`);
+  }
+  const wide = Math.max(document.documentElement.scrollWidth, innerWidth) - innerWidth;
+  if (wide > 1) problems.push(`the page scrolls sideways by ${wide}px`);
+  return problems;
+}

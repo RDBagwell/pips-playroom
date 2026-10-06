@@ -292,16 +292,20 @@
 
 .sticker-count {
   margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
   text-align: center;
   font-size: 1.15rem;
 }
 
-.next-sticker .sticker-art {
+.next-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.next-sticker-art .sticker-art {
   width: 40px;
   height: 40px;
 }
@@ -320,10 +324,12 @@
 
 .scene {
   position: relative;
-  width: 100%;
-  max-width: 900px;
+  /* As wide as fits, but short enough to see whole below the header. */
+  width: min(100%, 900px, calc((100vh - 300px) * 4 / 3));
+  min-width: min(100%, 300px);
   margin: 0 auto;
   aspect-ratio: 4 / 3;
+  container-type: inline-size;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-soft);
@@ -343,8 +349,13 @@
 }
 
 .placed {
+  /* --x / --y are the saved centre, in % of the page. The clamps keep the
+     whole sticker on the page, however close to an edge it was dropped. */
+  --size: clamp(64px, 17cqi, 130px);
   position: absolute;
-  width: clamp(64px, 17%, 130px);
+  left: clamp(calc(var(--size) / 2), var(--x, 50%), calc(100% - var(--size) / 2));
+  top: clamp(calc(var(--size) / 2), var(--y, 50%), calc(100% - var(--size) / 2));
+  width: var(--size);
   aspect-ratio: 1;
   translate: -50% -50%;
   padding: 0;
@@ -451,4 +462,62 @@
 
 .about-principles dd {
   margin: 0;
+}
+
+@supports (height: 100svh) {
+  .scene {
+    width: min(100%, 900px, calc((100svh - 300px) * 4 / 3));
+  }
+}
+
+.scene-tabs .tab-short {
+  display: none;
+}
+
+/* Phones held sideways: the page and the tray side by side, so a child can
+   tap a sticker and see it land without scrolling back and forth. */
+@media (max-height: 520px) and (orientation: landscape) {
+  .screen-stickers {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'top top'
+      'tabs count'
+      'scene tray'
+      'off tray';
+    align-items: start;
+    gap: 8px 16px;
+  }
+
+  .screen-stickers > .topbar { grid-area: top; }
+  .screen-stickers > .scene-tabs { grid-area: tabs; flex-wrap: nowrap; gap: 6px; }
+  .screen-stickers > .sticker-count { grid-area: count; font-size: 1rem; align-self: center; }
+  .screen-stickers > .scene { grid-area: scene; width: calc((100vh - 176px) * 4 / 3); min-width: 0; margin: 0; }
+  .screen-stickers > .sticker-off { grid-area: off; }
+  .screen-stickers > .empty,
+  .screen-stickers > .sticker-tray { grid-area: tray; }
+
+  .scene-tabs .small-button {
+    padding: 6px 10px;
+  }
+
+  .scene-tabs .tab-long {
+    display: none;
+  }
+
+  .scene-tabs .tab-short {
+    display: inline;
+  }
+
+  .screen-stickers > .sticker-tray {
+    max-height: calc(100vh - 176px);
+    overflow-y: auto;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    padding: 8px;
+  }
+
+  @supports (height: 100svh) {
+    .screen-stickers > .scene { width: calc((100svh - 176px) * 4 / 3); }
+    .screen-stickers > .sticker-tray { max-height: calc(100svh - 176px); }
+  }
 }
