@@ -9,6 +9,7 @@ import { screen, topbar, avatarBadge, starRow } from '../ui.js';
 import { allGames } from '../registry.js';
 import { peekProgress, allStars } from '../progress.js';
 import { resetProfile } from '../profiles.js';
+import { STICKERS, unlockedStickers } from '../stickers.js';
 import { confirmDialog } from '../dialog.js';
 import { defaultBack } from './gate.js';
 
@@ -70,7 +71,8 @@ register('progress', ({ profileId, back = defaultBack() } = {}) => {
       avatarBadge(profile, { size: 'md' }),
       el('span', { class: 'player-name', text: profile.name }),
       el('span', { class: 'player-stat', 'aria-label': `${allStars(profile)} stars in all` },
-        el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${allStars(profile)} in all`)),
+        el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${allStars(profile)} in all`),
+      el('span', { class: 'player-stat', text: `📒 ${unlockedStickers(allStars(profile)).length} of ${STICKERS.length} stickers` })),
     el('p', { class: 'hint', text: 'This view is for grown-ups, on this screen only. Nothing here is saved anywhere else or shared.' }),
     body,
   );

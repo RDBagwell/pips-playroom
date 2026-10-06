@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   optimalGuesses, starThresholds, roundStars, levelStars, pointsForRound, pickNumber,
   createQuest, guess, remaining, middleOf, hintReady, useHint, isNearMiddle, mixupKey,
-  startPhrases, resultPhrases, hintPhrases,
+  startPhrases, resultPhrases, hintPhrases, rangeOf, trickyRanges,
 } from '../../games/number-quest/logic.js';
 import { seeded } from '../helpers/rng.js';
 
@@ -178,5 +178,20 @@ describe('what Pip says', () => {
       ...resultPhrases(3, { kind: 'found', guesses: 9 }),
     ].join(' ');
     expect(all).not.toMatch(/wrong|no!|bad|fail|lost|game over|too bad/i);
+  });
+});
+
+describe('number ranges for grown-ups', () => {
+  it('puts numbers in ranges of ten', () => {
+    expect([1, 7, 10, 24, 29, 50, 99, 100].map(rangeOf)).toEqual([[1, 9], [1, 9], [10, 19], [20, 29], [20, 29], [50, 59], [90, 99], [90, 100]]);
+  });
+
+  it('groups mixed-up pairs by range, most mixed-up first, with an example', () => {
+    expect(trickyRanges({ '24|27': 2, '21|26': 1, '3|5': 1, '68|72': 4, bad: 9 })).toEqual([
+      { range: [70, 79], times: 4, example: [68, 72] },
+      { range: [20, 29], times: 3, example: [24, 27] },
+      { range: [1, 9], times: 1, example: [3, 5] },
+    ]);
+    expect(trickyRanges({})).toEqual([]);
   });
 });
