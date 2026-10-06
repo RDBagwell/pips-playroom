@@ -4,7 +4,7 @@
 Reading, numbers, maths and typing, in one place, with a shared sticker book.
 No accounts, no ads, no tracking: everything stays on the device.
 
-**Play it:** <https://rdbagwell.github.io/pips-playroom/>
+**Play it:** <\https://rdbagwell.github.io/pips-playroom/>
 
 | The playroom | Number Quest | Math Garden | Type with Pip |
 |---|---|---|---|
