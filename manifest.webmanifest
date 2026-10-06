@@ -1,7 +1,8 @@
 {
-  "name": "Reading Game",
-  "short_name": "Reading",
-  "description": "Listen, look, and find the word! A playful reading game for young children.",
+  "name": "Pip’s Playroom",
+  "short_name": "Playroom",
+  "description": "Playful reading and number games for young children, with Pip the owl. Nothing leaves the device.",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
@@ -10,6 +11,7 @@
   "background_color": "#FFF5DA",
   "theme_color": "#BFE8FF",
   "lang": "en",
+  "categories": ["education", "kids", "games"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },

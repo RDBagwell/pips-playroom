@@ -1,120 +1,129 @@
-# Reading Game
+# Pip's Playroom
 
-**Listen, look, and find the word!** A bright, playful reading game for young
-children. Pip the owl says a word out loud, and your child taps the card that
-matches.
+**Learning games for young children (about ages 4–8), with Pip the owl.**
+Choose your reader, then choose a game. Everything stays on the device.
 
-**Play it:** <https://rdbagwell.github.io/Reading_Game/>
+**Play it:** <https://rdbagwell.github.io/pips-playroom/>
 
-When my daughter was in first grade, I noticed she didn't like the reading assignments her teacher had her do. She, however, liked playing video games; that is when I got the idea to create this game.
-
-**Then and now:** the original game is preserved at the
-[`v1-original`](https://github.com/RDBagwell/Reading_Game/tree/v1-original) tag.
-It was about 150 lines of vanilla JavaScript. This rebuild keeps its core loop
-and adds everything around it.
-
-![The level map: a winding path of stepping stones with stars earned](docs/screenshots/level-map.png)
-
-| Playing on a tablet | On a phone | Level complete |
+| The playroom | Number Quest | Number Quest, 1–100 |
 |---|---|---|
-| ![A correct answer: the card glows, confetti bursts and points fly to the score](docs/screenshots/gameplay.png) | ![Six word cards and a big "Hear it again" button](docs/screenshots/gameplay-phone.png) | ![Three stars, the score tally and a "New best!" badge](docs/screenshots/level-complete-phone.png) |
+| ![The playroom: Pip greets the reader by name above a card for each game](docs/screenshots/playroom-phone.png) | ![Number Quest on a phone: clouds cover the numbers Pip has ruled out](docs/screenshots/number-quest-phone.png) | ![Number Quest with the number pad on 1 to 100](docs/screenshots/number-quest-pad-phone.png) |
 
-## How to play
+## The games
 
-1. Tap **Tap to play**, then choose your reader (or make a new one: pick an
-   animal and type a name).
-2. Pick a level on the map.
-3. Pip says *"Find the word… cat."* Tap the card that says **cat**. Tap
-   **🔊 Hear it again** as often as you like.
-4. A wrong tap is never punished. The game reads the word you tapped (*"That
-   word is hat"*), then asks again, so every mistake becomes a small lesson.
-   Missed words come back later in the level for another try.
-5. Find 8 words to finish the level. You earn 1–3 stars for how many you got on
-   the first try, and the next level opens.
+| Game | What it teaches | Started as |
+|---|---|---|
+| 📖 **Reading Game** | Listen, look, and find the word: 12 phonics levels | [`Reading_Game`](https://github.com/RDBagwell/Reading_Game) |
+| 🔢 **Number Quest** | Number order, comparing, and the "start in the middle" halving strategy | [`Speak_Number_Guessing_Game`](https://github.com/RDBagwell/Speak_Number_Guessing_Game) |
+
+More are on the way: the Math Sprint and Typing games join next.
+
+The originals are preserved at their repositories' `v1-original` tags.
+
+### Reading Game
+
+When my daughter was in first grade, I noticed she didn't like the reading
+assignments her teacher had her do. She, however, liked playing video games;
+that is when I got the idea to create this game.
+
+Pip says a word out loud and the child taps the card that matches. A wrong
+tap is never punished: the game reads the word they tapped ("That word is
+hat"), then asks again, and missed words come back later in the level.
+There are 12 levels following a standard phonics order; see
+[`data/reading/README.md`](data/reading/README.md) for the levels and how to edit them.
+
+![The Reading Game's level map](docs/screenshots/level-map.png)
 
 **Keyboard:** number keys **1–9** pick a card, **R** repeats the word.
 
-### Scoring
+**Scoring:** +10 for a first-try answer, +5 on the second try, +2 after that;
+a small streak bonus for first-try answers in a row; +20 per star at the end.
+Points are never taken away.
 
-- **+10** for a first-try answer, **+5** on the second try, **+2** after that.
-- **Streak bonus** for first-try answers in a row: +2, +4, +6… up to +10.
-- **Level bonus:** +20 per star.
-- Points are never taken away, and there is no "game over".
+### Number Quest
 
-The **Best Readers on This Device** board shows the top 10 readers by total
-score. Each stepping stone on the map shows that reader's stars and best score.
+Pip is thinking of a number. The child guesses, and Pip says **"Higher!"** or
+**"Lower!"** until they find it.
 
-### Grown-ups' corner
+- **A number line that narrows.** Every number is a big tile (numeral, and on
+  the first levels a dot picture). After each clue, friendly clouds roll over
+  the numbers that are ruled out, on the tiles and on the line above them.
+- **Six levels:** 🐞 Ladybug Meadow (1–5), 🐰 Bunny Burrow (1–10, ten-frames),
+  🐟 Fishy Pond (1–20), 🚀 Rocket Ridge (1–30), 🏝️ Treasure Island (1–50) and
+  🏰 Star Castle (1–100). The last two use a large number pad.
+- **Pip's hint**, offered after a few guesses (never required): "Try a number
+  in the middle!"
+- **Stars** compare guesses with the best possible for the range (halving
+  finds any number from 1 to 100 in 7 guesses). Within one guess of that is
+  three stars; up to about twice is two; finding the number is always at
+  least one. Tapping a number that's already under a cloud isn't counted:
+  Pip just repeats the clue.
+- **Voice answers** (the original game's main feature) are **off by
+  default**, and only a grown-up can switch them on, only where the browser
+  can understand speech **on the device**. See [Privacy](#privacy).
+
+**Keyboard:** type a number, **Enter** to guess, **H** for Pip's hint,
+**R** to hear Pip again.
+
+Levels live in [`data/number-quest/levels.json`](data/number-quest/levels.json)
+([format](data/number-quest/README.md)).
+
+## Grown-ups' corner
 
 Tap ⚙️ and **press and hold for 3 seconds** (little hands tap; grown-ups hold).
-There you can:
 
-- choose the voice and speaking speed (default 0.85×, a little slow for young ears)
-- turn sound effects on or off
-- show words in **lowercase** (how early readers are taught; "I" stays a
-  capital) or **Title Case**
-- unlock all levels
-- rename, reset or delete readers (up to 6 per device)
-- read how to play and what each level practises
-
-## The levels
-
-The levels follow a standard early-reading (phonics) sequence, with common
-sight words mixed in. Difficulty also comes from the **wrong choices**: early
-levels use words that start with different letters (practising first sounds),
-then rhyming words (*cat / hat / bat*: read the first letter), then look-alikes
-(*ship / shop / chip*: read the whole word).
-
-| # | Level | Practises | Cards | Wrong choices |
-|---|---|---|---|---|
-| 1 | 🐱 Cat Camp | Short-*a* words (cat, map, van) | 3 | different start |
-| 2 | 🐶 Puppy Park | All short vowels (dog, pig, bed, sun) | 4 | different start |
-| 3 | 🌷 Word Garden | First sight words (the, and, you, I) | 4 | different start |
-| 4 | 🐮 Busy Barn | Word families + sight words | 6 | rhyme |
-| 5 | 🐚 Shell Shore | *sh, ch, th, wh, ck* (ship, chin, that, duck) | 6 | look-alike |
-| 6 | 🐸 Frog Pond | Consonant blends (frog, stop, clap, jump) | 6 | mixed |
-| 7 | 🎂 Cake Castle | Silent *e* (cake, bike, home, cute) | 9 | look-alike |
-| 8 | 🌳 Friendly Forest | More sight words (said, was, they, come) | 9 | mixed |
-| 9 | ☔ Rainy Road | Vowel teams (rain, boat, feet, play, snow) | 9 | look-alike |
-| 10 | ⭐ Star Farm | Bossy *r* (car, bird, corn, her) | 9 | look-alike |
-| 11 | 🐰 Bunny Hill | Two-syllable words (rabbit, sunset, kitten) | 9 | mixed |
-| 12 | 🌈 Rainbow Mountain | Big review, with every word from v1 | 9 | mixed |
-
-Every word from the original game (dog, cat, the, hop, hat, bat, house, cake,
-ball, box, fox, mouse, home, rat) is still in there. The tests also make sure
-no two words in the game sound the same (*to/two*, *see/sea*), because the child
-only *hears* the target.
-
-### Adding words or levels
-
-All words live in [`data/levels.json`](data/levels.json). The format, the
-distractor modes and the rules are explained in
-[`data/README.md`](data/README.md). After editing, run `npm test`: it checks
-the file and names any problem in plain words.
+- **Voice:** which voice Pip uses (voices on this device come first) and how fast.
+- **Sounds** on or off.
+- **Games in the playroom:** hide a game that isn't right for your child yet.
+- **Each game's settings:** word case and unlocking for the Reading Game;
+  Pip's hint, unlocking and voice answers for Number Quest; how each game
+  works and what each level practises.
+- **Readers:** rename, reset or delete (up to 6 per device), and a
+  **progress view** per child: levels completed, stars, the words they find
+  tricky, and for Number Quest how they use the clues (mixed-up number pairs,
+  how often they start in the middle). It's on screen only: there is no
+  export, print or share.
 
 ## Privacy
 
-The players are children, so the game is built to collect nothing:
+The players are children, so the playroom is built to collect nothing:
 
 - **No accounts, no analytics, no trackers, no ads.**
-- **No network requests at all** beyond loading the game's own files. The font
-  is self-hosted; there are no third-party scripts, fonts or images.
-- **Everything stays on the device.** Reader names, scores and settings are
-  saved in the browser's `localStorage` on that device only, and never leave
-  it. If the browser blocks storage (for example in private browsing), the game
-  still works; it just doesn't remember anything.
-- Speech comes from the browser's built-in voices. Some browsers or operating
-  systems may use an online voice service for certain voices; the game itself
-  sends nothing.
+- **No network requests at all** beyond the site's own files. The font is
+  self-hosted; there are no third-party scripts, fonts or images.
+- **Everything stays on the device**, in one `localStorage` record. If the
+  browser blocks storage (for example in private browsing), the games still
+  work; they just don't remember anything.
+- **Pip's voice:** speech comes from the browser's voices. Some are
+  online voices (Chrome's "Google US English", for example) that send the words
+  to a server to be spoken. The playroom always prefers a voice **on this
+  device**, uses an online voice only if the device has no English voice of
+  its own, and then tells grown-ups so in settings. A grown-up can still pick
+  an online voice on purpose.
+- **Voice answers** in Number Quest only ever use **on-device** speech
+  recognition (`SpeechRecognition.available({ langs: ['en-US'], processLocally: true })`
+  and `recognition.processLocally = true`). Where a browser can't promise
+  that, the option is hidden and settings explain why. Server-based
+  recognition is never used. The microphone is only requested after a
+  grown-up has switched voice answers on and the child taps 🎤, and the
+  button shows "Listening…" while it listens.
 
 A strict Content Security Policy (`default-src 'self'`, no inline scripts)
-enforces the "own files only" rule in the browser.
+enforces the "own files only" rule in the browser, and the tests check it.
+
+### Readers from the old Reading Game
+
+The playroom is served from the same site as the old Reading Game
+(`rdbagwell.github.io`), so it can see the old game's saved readers. The first
+time it loads on a device with a `reading-game` record and no `pips-playroom`
+record, it brings the readers, stars, scores and settings over (checking the
+old data like any untrusted input), notes the import, and shows a welcome.
+The old record is left exactly as it was.
 
 ## Running it locally
 
 There is no build step: the site is plain HTML, CSS and JavaScript modules.
-Because it uses ES modules and loads `data/levels.json`, serve the folder
-over HTTP rather than opening `index.html` from disk:
+Serve the folder over HTTP (ES modules and the level data don't load from `file://`):
 
 ```sh
 npm start                 # uses npx http-server on http://localhost:8080
@@ -122,8 +131,8 @@ npm start                 # uses npx http-server on http://localhost:8080
 python3 -m http.server 8080
 ```
 
-The game needs a browser with speech synthesis (recent Safari, Chrome, Edge or
-Firefox). If there isn't one, the game shows a note for grown-ups instead.
+The games need a browser with speech synthesis (recent Safari, Chrome, Edge
+or Firefox). Without it, the playroom shows a note for grown-ups instead.
 
 ## Tests
 
@@ -132,48 +141,66 @@ npm install
 npm test
 ```
 
-[Vitest](https://vitest.dev/) (with jsdom) covers level data validation,
-distractor selection for each mode, target picking and missed-word review,
-scoring and streaks, stars, profile names, storage (save, load, migration,
-corrupted data, blocked storage), speech (with a mocked `speechSynthesis`, so no
-audio is needed), the security rules, and a full play-through of level 1 in
-jsdom.
+[Vitest](https://vitest.dev/) with jsdom. The tests cover the game
+registration interface; storage (save, load, migrations, corrupted data,
+blocked storage) and importing the old Reading Game record (real-shaped and
+damaged fixtures); voice ranking (on-device first); on-device-only voice
+answers (a mocked `SpeechRecognition` reporting every availability state);
+the Reading Game's level data, distractors, rounds, scoring and a full
+play-through; Number Quest's range narrowing, hints, stars against the
+optimal guess count, level data and spoken-number parsing, plus a play-through
+of its levels; the hub and grown-ups' corner; and the security rules.
 
 ## Deployment
 
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests on
-every push and pull request. On a push to `main` (or `master`, the current
-default branch), it deploys only the game's files to GitHub Pages. All paths
-are relative, so it works from `/Reading_Game/`.
+every push and pull request, and on a push to `main` deploys only the site's
+files to GitHub Pages. All paths are relative, so it works from `/pips-playroom/`.
 
 One-time setup: in the repository's **Settings → Pages**, set **Source** to
 **GitHub Actions**.
 
-The site includes a web app manifest and icons, so it can be added to a
-tablet's home screen and launched full-screen. There is no service worker, so
-it needs a connection to load. That keeps updates simple, with no stale caches.
+The web app manifest and icons (drawn from Pip) let it be added to a tablet's
+home screen and launched full-screen. There is no service worker, so updates
+are never stuck behind a stale cache.
 
 ## How it's built
 
 ```
-index.html              the page (strict CSP, no inline scripts)
-css/style.css           the whole look, including Pip's animations
-data/levels.json        all the words
-fonts/                  Andika (SIL Open Font License), self-hosted
-icons/                  app icons, drawn from the mascot
-js/main.js              start-up
-js/router.js            shows one screen at a time
-js/screens/*.js         start, readers, map, play, level complete, scores, gate, settings
-js/round.js             one play-through: next word, review, answers   (pure)
-js/distractors.js       choosing the wrong answers                     (pure)
-js/scoring.js           points, streaks, stars                         (pure)
-js/progress.js          unlocking and bests                            (pure)
-js/profiles.js          names, avatars, the high-score board           (pure)
-js/storage.js           the versioned localStorage record
-js/speech.js            voices and speaking
-js/sfx.js               Web Audio sound effects (no audio files)
-js/mascot.js            Pip the owl, drawn in SVG
+index.html                 the page (strict CSP, no inline scripts)
+css/style.css              the shared look (from the Reading Game)
+css/playroom.css           the hub and grown-ups' additions
+core/                      shared by every game
+  main.js                  start-up
+  registry.js              registerGame(): how a game joins the playroom
+  router.js                one screen at a time
+  storage.js               the one versioned localStorage record + migrations
+  profiles.js progress.js  readers, and each reader's progress per game
+  speech.js sfx.js         Pip's voice (on-device first); Web Audio sounds
+  recognition.js           on-device-only speech recognition
+  mascot.js effects.js     Pip the owl in SVG; confetti
+  screens/                 start, readers, hub, level map, level complete,
+                           best scores, gate, settings, progress
+games/index.js             the list of games (one registerGame() call each)
+games/reading/             the Reading Game
+games/number-quest/        Number Quest
+data/<game>/levels.json    each game's levels
+fonts/  icons/             Andika (SIL OFL), app icons
 ```
+
+### Adding a game
+
+1. Make a folder `games/<id>/` with a `game.js` that exports a definition:
+   `id`, `title`, `tagline`, `color`, `icon()`, `data` (its levels file),
+   `loadLevels(json)`, `start`, `screens`, and optionally `settings`,
+   `settingsSection()`, `report()` and `stylesheet`
+   (the full shape is documented in [`core/registry.js`](core/registry.js)).
+2. Put its levels in `data/<id>/levels.json`.
+3. Add one `registerGame()` call to [`games/index.js`](games/index.js).
+
+Its screens are registered as `<id>/<screen>`; the shared level map and
+"Level complete!" screens come from `createLevelMap()` and `createLevelComplete()`.
+Progress is saved per game in `profile.games[<id>]`.
 
 All text on screen, including a reader's name, is set with `textContent`.
 There is no `innerHTML`.
@@ -181,14 +208,9 @@ There is no `innerHTML`.
 ### Art, sound and font
 
 - **Pip the owl** and all other art are original: SVG, CSS gradients and emoji.
-- **Sounds** are generated live with the Web Audio API. There are no audio
-  files, and there is no buzzer: a wrong answer gets a soft, neutral "boop".
+- **Sounds** are generated live with the Web Audio API. There is no buzzer: a
+  wrong answer gets a soft, neutral "boop".
 - **Andika** by SIL International is a typeface designed for beginning readers,
-  with the single-story *a* and *g* children learn to write. It's licensed under
-  the [SIL Open Font License](fonts/OFL.txt).
-
-### Icons
-
-`node scripts/make-icon-svg.mjs` rebuilds `icons/icon.svg` from the mascot
-drawing. The PNGs (`icon-180/192/512.png`) were rendered from that SVG in a
-headless browser at those sizes. Any SVG-to-PNG tool works.
+  licensed under the [SIL Open Font License](fonts/OFL.txt).
+- `node scripts/make-icon-svg.mjs` rebuilds `icons/icon.svg` from the mascot
+  drawing. The PNG icons were rendered from it in a headless browser.
