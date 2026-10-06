@@ -1,0 +1,381 @@
+/* Number Quest. Builds on css/style.css and css/playroom.css. */
+
+.screen-quest {
+  gap: clamp(10px, 2vw, 18px);
+}
+
+.quest-area {
+  flex: 1;
+  display: grid;
+  gap: clamp(12px, 2.5vw, 22px);
+  align-content: start;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.quest-helper {
+  justify-content: flex-start;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.quest-helper .mascot {
+  width: clamp(76px, 16vw, 120px);
+}
+
+.quest-bubble {
+  flex: 1;
+  min-height: 3.2em;
+  display: flex;
+  align-items: center;
+}
+
+.quest-board {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+/* ----- the number line ----- */
+.track {
+  position: relative;
+  width: 100%;
+  height: 92px;
+  margin: 0 8px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #e6f6ff, #fdfbf2);
+  box-shadow: inset 0 0 0 3px #d3ecf9;
+  overflow: hidden;
+}
+
+.track-line {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  height: 10px;
+  translate: 0 -50%;
+  border-radius: 999px;
+  background: var(--leaf);
+}
+
+.track-flags {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.track-flag {
+  position: absolute;
+  top: 8px;
+  translate: -50% 0;
+  min-width: 34px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: 0 3px 0 var(--paper-edge);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.track-flag.found {
+  background: var(--sun);
+  box-shadow: 0 3px 0 var(--sun-edge);
+  z-index: 2;
+}
+
+/* Friendly clouds roll in over the numbers that are ruled out. */
+.track-cloud {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  background: #fff;
+  box-shadow: inset 0 -6px 0 #e3f1fa, 0 4px 14px rgba(55, 153, 208, 0.18);
+  transition: width 500ms cubic-bezier(0.3, 1.2, 0.5, 1);
+}
+
+.track-cloud.empty {
+  box-shadow: none;
+}
+
+.track-cloud-left {
+  left: 0;
+  border-radius: var(--radius) 46px 46px var(--radius);
+}
+
+.track-cloud-right {
+  right: 0;
+  border-radius: 46px var(--radius) var(--radius) 46px;
+}
+
+.track-end {
+  position: absolute;
+  bottom: 6px;
+  z-index: 2;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.track-min {
+  left: 12px;
+}
+
+.track-max {
+  right: 12px;
+}
+
+.range-label {
+  margin: 0;
+  font-size: clamp(1.2rem, 3.6vw, 1.5rem);
+  font-weight: 700;
+}
+
+/* ----- number tiles (a number line that wraps) ----- */
+.num-tiles {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+/* Rows of five or ten make tens and ones easy to see. */
+@media (min-width: 420px) {
+  .num-tiles {
+    grid-template-columns: repeat(5, minmax(64px, 1fr));
+  }
+}
+
+@media (min-width: 760px) {
+  .num-tiles[data-count='10'],
+  .num-tiles[data-count='20'],
+  .num-tiles[data-count='30'] {
+    grid-template-columns: repeat(10, minmax(64px, 1fr));
+  }
+}
+
+.num-tiles[data-count='5'] {
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  max-width: 720px;
+}
+
+.num-tile {
+  position: relative;
+  min-width: 64px;
+  min-height: 64px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--paper-edge), var(--shadow-soft);
+  transition: transform 120ms ease, opacity 300ms ease, background-color 300ms ease;
+}
+
+.num-tile-numeral {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.with-dots .num-tile {
+  min-height: 112px;
+}
+
+.with-dots .num-tile-numeral {
+  font-size: clamp(2rem, 6vw, 2.8rem);
+}
+
+.num-tile:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--paper-edge);
+}
+
+.num-tile.guessed {
+  background: var(--paper-2);
+}
+
+.num-tile.cloud {
+  background: #fff;
+  color: #b9c4cf;
+  box-shadow: 0 0 0 3px #e8f4fb inset;
+  opacity: 0.75;
+}
+
+.num-tile.cloud::after {
+  content: '☁';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 2.6rem;
+  color: rgba(214, 232, 245, 0.95);
+}
+
+.num-tile.cloud .dots {
+  opacity: 0.3;
+}
+
+.num-tile.hinted {
+  outline: 5px dashed var(--grape);
+  outline-offset: 3px;
+  animation: stone-bounce 900ms ease-in-out 3;
+}
+
+.num-tile.found {
+  background: var(--sun);
+  box-shadow: 0 6px 0 var(--sun-edge), var(--shadow-soft);
+  animation: pop 420ms ease-out;
+}
+
+/* Dot pictures: a row of five, or a ten-frame. */
+.dots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  padding: 3px;
+  width: min(100%, 76px);
+  border-radius: 6px;
+  background: #f3ead6;
+}
+
+.dot-on,
+.dot-off {
+  width: 100%;
+  max-width: 11px;
+  aspect-ratio: 1;
+  justify-self: center;
+  border-radius: 50%;
+}
+
+.dot-on {
+  background: var(--coral);
+}
+
+.dot-off {
+  background: #fff;
+}
+
+.dots-5 {
+  width: min(100%, 96px);
+}
+
+.dots-5 .dot-on,
+.dots-5 .dot-off {
+  max-width: 15px;
+}
+
+.typed {
+  min-height: 1.6em;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--grape);
+}
+
+/* ----- number pad ----- */
+.pad {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 360px);
+}
+
+.pad-display {
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 3px var(--paper-edge);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.pad-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pad-key {
+  min-height: 72px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--paper-edge), var(--shadow-soft);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.pad-key:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--paper-edge);
+}
+
+.pad-go {
+  background: var(--leaf);
+  box-shadow: 0 6px 0 #3e9e68, var(--shadow-soft);
+}
+
+.pad-back {
+  background: var(--paper-2);
+}
+
+/* ----- actions ----- */
+.quest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+.hint-button {
+  min-height: 80px;
+  background: #efe6ff;
+  box-shadow: 0 7px 0 #c9b6f2, var(--shadow-soft);
+}
+
+.mic-button {
+  min-height: 80px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 26px 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--coral);
+  color: var(--ink);
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  font-weight: 700;
+  box-shadow: 0 7px 0 #d65a4c, var(--shadow-soft);
+}
+
+.mic-icon {
+  font-size: 2rem;
+}
+
+/* Very clear when the microphone is on. */
+.mic-button.listening {
+  background: #ffe1dd;
+  outline: 5px solid var(--coral);
+  outline-offset: 4px;
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track-cloud {
+    transition: none;
+  }
+
+  .mic-button.listening {
+    animation: none;
+  }
+}

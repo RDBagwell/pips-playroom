@@ -8,7 +8,10 @@ const read = (p) => readFileSync(join(root, p), 'utf8');
 const jsFiles = (dir) => readdirSync(join(root, dir), { withFileTypes: true }).flatMap((d) =>
   d.isDirectory() ? jsFiles(join(dir, d.name)) : d.name.endsWith('.js') ? [join(dir, d.name)] : []);
 const html = read('index.html');
-const sources = jsFiles('js').map((f) => [f, read(f)]);
+const sources = [...jsFiles('core'), ...jsFiles('games')].map((f) => [f, read(f)]);
+const cssFiles = (dir) => readdirSync(join(root, dir), { withFileTypes: true }).flatMap((d) =>
+  d.isDirectory() ? cssFiles(join(dir, d.name)) : d.name.endsWith('.css') ? [join(dir, d.name)] : []);
+const styles = [...cssFiles('css'), ...cssFiles('games')].map((f) => [f, read(f)]);
 
 describe('page security', () => {
   it('declares a doctype and a strict Content Security Policy', () => {
@@ -31,7 +34,7 @@ describe('page security', () => {
   });
 
   it('loads nothing from other sites', () => {
-    const files = [['index.html', html], ['css/style.css', read('css/style.css')], ['manifest.webmanifest', read('manifest.webmanifest')], ...sources];
+    const files = [['index.html', html], ...styles, ['manifest.webmanifest', read('manifest.webmanifest')], ...sources];
     for (const [file, src] of files) {
       const urls = src.match(/https?:\/\/[^\s'")]+/g) || [];
       // The only allowed absolute URL is the SVG namespace identifier.
@@ -42,10 +45,27 @@ describe('page security', () => {
   it('only fetches its own level data', () => {
     const fetches = sources.flatMap(([, src]) => src.match(/fetch\w*\(/g) || []);
     expect(fetches.length).toBeLessThanOrEqual(2);
-    expect(read('js/main.js')).toMatch(/loadLevels\('\.\/data\/levels\.json'\)/);
+    // Every game's data path is relative and inside data/.
+    const dataPaths = sources.filter(([f]) => f.startsWith('games')).flatMap(([, src]) => [...src.matchAll(/\bdata: '([^']+)'/g)].map((m) => m[1]));
+    expect(dataPaths.sort()).toEqual(['./data/number-quest/levels.json', './data/reading/levels.json']);
+    expect(read('core/main.js')).toMatch(/loadAllGames\(/);
   });
 
-  it('uses relative paths so it works from a sub-path like /Reading_Game/', () => {
+  it('never uses beacons, sockets, workers or other ways to send data', () => {
+    for (const [file, src] of sources) {
+      expect(src, file).not.toMatch(/XMLHttpRequest|sendBeacon|WebSocket|EventSource|new Worker|serviceWorker|RTCPeerConnection|import\(\s*['"`]https?:/);
+    }
+  });
+
+  it('only uses on-device speech recognition', () => {
+    const uses = sources.filter(([, src]) => /SpeechRecognition/.test(src)).map(([f]) => f);
+    expect(uses).toEqual([join('core', 'recognition.js')]);
+    const rec = read('core/recognition.js');
+    expect(rec).toMatch(/processLocally = true/);
+    expect(rec).not.toMatch(/processLocally = false/);
+  });
+
+  it('uses relative paths so it works from a sub-path like /pips-playroom/', () => {
     const refs = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1]);
     for (const r of refs) expect(r.startsWith('./'), r).toBe(true);
   });
