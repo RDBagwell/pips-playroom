@@ -23,7 +23,7 @@ export const createLevelComplete = (gameId) => ({ levelId, stars, bonus, base, s
   const timers = [];
 
   const starEls = [1, 2, 3].map((n) =>
-    el('span', { class: `big-star${n <= stars ? ' earned' : ''}`, style: { '--n': String(n) }, 'aria-hidden': 'true', text: '★' }));
+    el('span', { class: `big-star${n <= stars ? ' earned' : ''}`, style: { '--n': String(n) }, 'aria-hidden': 'true', text: n <= stars ? '★' : '☆' }));
   const total = el('span', { class: 'tally-total', text: calm ? score.toLocaleString() : '0' });
   const newBest = outcome.newBest ? el('p', { class: 'new-best', text: 'New best!' }) : null;
   // Stars from every game feed the sticker book.

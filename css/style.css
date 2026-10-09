@@ -37,7 +37,10 @@
   --sky-edge: #3799d0;
   --leaf: #5cc689;
   --grape: #9b7be6;
-  --star-off: #e7dcc4;
+  /* Stars must reach 3:1 against the page (WCAG 1.4.11): the empty ones are an outline (☆) in a darker
+     tan, the earned ones keep their gold but get a dark edge. */
+  --star-off: #8c7a55;
+  --star-edge: #8a5a00;
 
   --radius: 28px;
   --radius-sm: 18px;
@@ -508,6 +511,7 @@ button {
 
 .player-stat .star.on {
   color: #e0a100;
+  -webkit-text-stroke: 1px var(--star-edge);
 }
 
 .level-path {
@@ -663,6 +667,7 @@ button {
 
 .star.on {
   color: #f5b300;
+  -webkit-text-stroke: 1px var(--star-edge);
 }
 
 .star-row-sm {
@@ -730,13 +735,14 @@ button {
 }
 
 .dot::before {
-  content: '★';
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 2px 0 var(--paper-edge);
+  content: '☆';
+  color: var(--star-off);
 }
 
 .dot.on::before {
+  content: '★';
   color: #f5b300;
+  -webkit-text-stroke: 1px var(--star-edge);
   text-shadow: 0 2px 0 var(--sun-edge);
   display: inline-block;
   animation: bump 320ms ease-out;
@@ -1069,6 +1075,7 @@ button {
 
 .big-star.earned {
   color: #f5b300;
+  -webkit-text-stroke: 2px var(--star-edge);
   text-shadow: 0 4px 0 var(--sun-edge), 0 0 26px rgba(255, 201, 60, 0.8);
   animation: star-in 420ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
   animation-delay: calc(350ms + var(--n) * 380ms);

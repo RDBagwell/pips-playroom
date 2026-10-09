@@ -108,14 +108,15 @@ export function playScreen({ levelId, practice = false }) {
 
   // ----- DOM -----
   const scoreValue = el('span', { class: 'score-value', text: '0' });
-  const scoreBox = el('div', { class: 'score-box', 'aria-label': 'Score' },
+  const scoreBox = el('div', { class: 'score-box' },
+    el('span', { class: 'sr-only', text: 'Score: ' }),
     el('span', { class: 'coin', 'aria-hidden': 'true', text: '🪙' }), scoreValue);
   const dots = Array.from({ length: level.goal }, () => el('span', { class: 'dot', 'aria-hidden': 'true' }));
   const progress = el('div', {
     class: 'progress', role: 'progressbar', 'aria-label': 'Typed so far',
     'aria-valuemin': 0, 'aria-valuemax': level.goal, 'aria-valuenow': 0,
   }, ...dots);
-  const target = el('p', { class: `type-target type-${level.kind}`, tabindex: '-1', 'aria-live': 'polite' });
+  const target = el('p', { class: `type-target type-${level.kind}`, tabindex: '-1' });
   const fingerHint = el('p', { class: 'finger-hint', 'aria-live': 'polite' });
   const capsNote = el('p', { class: 'caps-note', hidden: true, text: 'Caps Lock is on. That’s OK: big or small letters both count.' });
   const status = el('p', { class: 'sr-only', 'aria-live': 'polite' });
@@ -148,6 +149,11 @@ export function playScreen({ levelId, practice = false }) {
     progress, card, game, status);
 
   // ----- talking -----
+  /** Tell screen readers about a new letter, word or sentence (cleared first so a repeat is still read). */
+  function announce(text) {
+    status.textContent = '';
+    later(() => { status.textContent = text; }, 50);
+  }
   function say(lines) {
     lastLines = lines;
     return speech.say(lines);
@@ -165,8 +171,10 @@ export function playScreen({ levelId, practice = false }) {
       const show = state === 'ch-typed' || !hidden ? (c === ' ' ? ' ' : c) : (c === ' ' ? ' ' : '_');
       return el('span', { class: `ch ${state}${c === ' ' ? ' ch-space' : ''}`, 'aria-hidden': 'true', text: show });
     });
-    target.replaceChildren(...chars);
-    target.setAttribute('aria-label', hidden ? `Spell the word you heard. ${t.index} of ${t.text.length} letters typed.` : `Type: ${t.text}. ${t.index} of ${t.text.length} typed.`);
+    // The letters are aria-hidden (one span each reads badly), so screen readers get one sentence instead.
+    // It's real text, not an aria-label: a label on a plain <p> is ignored.
+    const said = hidden ? `Spell the word you heard. ${t.index} of ${t.text.length} letters typed.` : `Type: ${t.text}. ${t.index} of ${t.text.length} typed.`;
+    target.replaceChildren(...chars, el('span', { class: 'sr-only', text: said }));
     const next = nextChar(t);
     keyboard.highlight(next);
     const finger = next ? fingerFor(next) : null;
@@ -188,6 +196,7 @@ export function playScreen({ levelId, practice = false }) {
     wrongInARow = 0;
     render();
     locked = false;
+    announce(hidden ? 'Spell the word you heard.' : `Type: ${t.text}.`);
     say(promptFor(level, t.text, hidden));
   }
 

@@ -53,6 +53,12 @@ describe('Type with Pip', () => {
     await flush(400);
     expect(document.activeElement.classList.contains('type-target')).toBe(true); // no text field, so no on-screen keyboard
     expect(document.querySelector('input, textarea, [contenteditable]')).toBeNull();
+    // Screen readers get the target as real text (a label on a plain <p> would be ignored), and a new one is announced.
+    const target = document.querySelector('.type-target');
+    expect(target.hasAttribute('aria-label')).toBe(false);
+    expect(target.querySelector('.sr-only').textContent).toBe(`Type: ${targetText()}. 0 of 1 typed.`);
+    await flush(60);
+    expect(app().querySelector('.sr-only[aria-live]').textContent).toBe(`Type: ${targetText()}.`);
     for (let i = 0; i < 10; i += 1) {
       const letter = targetText();
       expect(letter).toMatch(/^[asdfjkl]$/);

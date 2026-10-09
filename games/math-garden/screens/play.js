@@ -76,7 +76,8 @@ export function playScreen({ levelId }) {
 
   // ----- DOM -----
   const scoreValue = el('span', { class: 'score-value', text: '0' });
-  const scoreBox = el('div', { class: 'score-box', 'aria-label': 'Score' },
+  const scoreBox = el('div', { class: 'score-box' },
+    el('span', { class: 'sr-only', text: 'Score: ' }),
     el('span', { class: 'coin', 'aria-hidden': 'true', text: '🪙' }), scoreValue);
   const dots = Array.from({ length: level.goal }, () => el('span', { class: 'dot', 'aria-hidden': 'true' }));
   const progress = el('div', {

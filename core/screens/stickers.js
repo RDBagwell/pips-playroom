@@ -211,5 +211,5 @@ register('stickers', ({ scene: sceneId = SCENES[0].id } = {}) => {
   );
   renderPage();
   if (prefersReducedMotion()) node.classList.add('calm');
-  return { node, title: 'Sticker book', focus: node.querySelector('.tray-sticker') || node.querySelector('h1') };
+  return { node, title: 'Sticker book', focus: node.querySelector('button.tray-sticker') || node.querySelector('h1') };
 });
