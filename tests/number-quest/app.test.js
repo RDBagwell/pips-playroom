@@ -70,7 +70,8 @@ describe('Number Quest', () => {
     button("Let's go").click();
     expect(app().dataset.screen).toBe('hub');
     const card = document.querySelector('.game-card[data-game="number-quest"]');
-    expect(card.getAttribute('aria-label')).toMatch(/Number Quest\..*0 of 18 stars/);
+    expect(card.textContent).toMatch(/Number Quest\..*0 of 18 stars/); // named by its visible text (WCAG 2.5.3)
+    expect(card.hasAttribute('aria-label')).toBe(false);
     expect(document.querySelector('.game-card svg')).not.toBeNull();
     card.click();
     expect(app().dataset.screen).toBe('number-quest/map');

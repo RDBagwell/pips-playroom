@@ -66,11 +66,11 @@ describe('the playroom', () => {
     expect(document.querySelector('.sticker-party h2').textContent).toBe('3 new stickers!');
     expect(document.querySelector('.sticker-banner').textContent).toMatch(/3 of 24 stickers · 2 more stars for the next sticker!/);
     expect(JSON.parse(localStorage.getItem('pips-playroom')).profiles[0].stickers.seen).toBe(3);
-    expect(document.querySelector('.player-bar').textContent).toMatch(/6 in all/);
+    expect(document.querySelector('.player-bar').textContent).toMatch(/6 stars in all/);
     const cards = [...document.querySelectorAll('.game-card')];
     expect(cards.map((c) => c.dataset.game)).toEqual(GAME_IDS);
-    expect(cards[0].querySelector('.game-card-stars').textContent).toBe('★ 6 of 36');
-    expect(cards[1].querySelector('.game-card-stars').textContent).toBe('★ 0 of 18');
+    expect(cards[0].querySelector('.game-card-stars').textContent).toBe('★ 6 of 36 stars');
+    expect(cards[1].querySelector('.game-card-stars').textContent).toBe('★ 0 of 18 stars');
     expect(document.title).toBe('Playroom · Pip’s Playroom');
   });
 

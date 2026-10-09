@@ -24,11 +24,11 @@ register('scores', ({ game = null, back = defaultBack() } = {}) => {
     ? el('ol', { class: 'score-list' }, ...board.map((row, i) => {
       const a = avatarFor(row.avatar);
       return el('li', { class: 'score-row' },
-        el('span', { class: 'score-rank', 'aria-label': `Number ${i + 1}` }, medals[i] || String(i + 1)),
+        el('span', { class: 'score-rank' }, el('span', { 'aria-hidden': 'true', text: medals[i] || String(i + 1) }), el('span', { class: 'sr-only', text: `Number ${i + 1}` })),
         el('span', { class: 'avatar avatar-md', role: 'img', 'aria-label': a.label, text: a.emoji }),
         el('span', { class: 'score-name', text: row.name }),
-        el('span', { class: 'score-stars', 'aria-label': `${row.stars} stars`, text: `★ ${row.stars}` }),
-        el('span', { class: 'score-points', 'aria-label': `${row.score} points`, text: row.score.toLocaleString() }),
+        el('span', { class: 'score-stars' }, el('span', { 'aria-hidden': 'true', text: '★ ' }), String(row.stars), el('span', { class: 'sr-only', text: ' stars' })),
+        el('span', { class: 'score-points' }, row.score.toLocaleString(), el('span', { class: 'sr-only', text: ' points' })),
       );
     }))
     : el('p', { class: 'panel empty', text: 'No scores yet. Play a level to get on the board!' });

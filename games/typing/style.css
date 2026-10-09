@@ -161,10 +161,11 @@
 .fingers .kb-key[data-finger$='ring'] { background: #dcefff; }
 .fingers .kb-key[data-finger$='middle'] { background: #dff5e6; }
 .fingers .kb-key[data-finger$='index'] { background: #fff1c9; }
-.finger-hint[data-finger$='little'] { color: #c2437b; }
-.finger-hint[data-finger$='ring'] { color: #2878b5; }
-.finger-hint[data-finger$='middle'] { color: #2e8a52; }
-.finger-hint[data-finger$='index'] { color: #a26a00; }
+/* Darker than the key colours so the hint reads at 4.5:1 or more on the sky (WCAG 1.4.3). */
+.finger-hint[data-finger$='little'] { color: #9c2a5e; }
+.finger-hint[data-finger$='ring'] { color: #1d5f91; }
+.finger-hint[data-finger$='middle'] { color: #1f6b3d; }
+.finger-hint[data-finger$='index'] { color: #7d5200; }
 
 .kb-key.next {
   outline: 4px solid var(--grape);

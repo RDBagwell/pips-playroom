@@ -28,14 +28,10 @@ register('hub', ({ greet = false } = {}) => {
     const ready = game.status === 'ready';
     const stars = totalStars(peekProgress(profile, game.id));
     const max = game.levels.length * MAX_STARS;
-    const label = ready
-      ? `${game.title}. ${game.tagline} ${stars} of ${max} stars.`
-      : `${game.title}. Not available right now.`;
     return el('li', {},
       el('button', {
         type: 'button',
         class: `game-card${ready ? '' : ' unavailable'}`,
-        'aria-label': label,
         dataset: { game: game.id },
         style: { '--game-color': game.color || '#FFC93C' },
         on: {
@@ -51,11 +47,13 @@ register('hub', ({ greet = false } = {}) => {
         },
       },
       el('span', { class: 'game-card-art', 'aria-hidden': 'true' }, game.icon()),
-      el('span', { class: 'game-card-title', 'aria-hidden': 'true', text: game.title }),
-      el('span', { class: 'game-card-tagline', 'aria-hidden': 'true', text: ready ? game.tagline : 'Not available right now' }),
+      // Named by its visible text (title, tagline, stars), so what's on screen is what voice control can say.
+      el('span', { class: 'game-card-title', text: game.title }),
+      el('span', { class: 'sr-only', text: '. ' }),
+      el('span', { class: 'game-card-tagline', text: ready ? game.tagline : 'Not available right now' }),
       ready
-        ? el('span', { class: 'game-card-stars', 'aria-hidden': 'true' },
-          el('span', { class: 'star on', text: '★' }), ` ${stars} of ${max}`)
+        ? el('span', { class: 'game-card-stars' },
+          el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${stars} of ${max}`, el('span', { class: 'sr-only', text: ' stars' }))
         : null,
       ));
   });
@@ -110,8 +108,8 @@ register('hub', ({ greet = false } = {}) => {
     el('div', { class: 'player-bar' },
       avatarBadge(profile, { size: 'md' }),
       el('span', { class: 'player-name', text: profile.name }),
-      el('span', { class: 'player-stat', 'aria-label': `${total} stars in all` },
-        el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${total} in all`),
+      el('span', { class: 'player-stat' },
+        el('span', { class: 'star on', 'aria-hidden': 'true', text: '★' }), ` ${total}`, el('span', { class: 'sr-only', text: ' stars' }), ' in all'),
     ),
     msg && notice(msg),
     party,

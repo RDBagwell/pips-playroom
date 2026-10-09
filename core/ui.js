@@ -35,5 +35,5 @@ export function notice(text, kind = 'info') {
 
 export function starRow(count, max = 3, { size = 'sm' } = {}) {
   return el('span', { class: `star-row star-row-${size}`, role: 'img', 'aria-label': `${count} of ${max} stars` },
-    ...Array.from({ length: max }, (_, i) => el('span', { class: i < count ? 'star on' : 'star', 'aria-hidden': 'true', text: '★' })));
+    ...Array.from({ length: max }, (_, i) => el('span', { class: i < count ? 'star on' : 'star', 'aria-hidden': 'true', text: i < count ? '★' : '☆' })));
 }
